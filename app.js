@@ -630,6 +630,34 @@ async function callAI(prompt, base64, mimeType, dataUrl) {
     return start >= 0 && end >= start ? cleaned.slice(start, end + 1) : cleaned;
   }
 
+  if (provider === 'claude') {
+    const body = {
+      model: 'claude-3-5-sonnet-20241022',
+      max_tokens: 4096,
+      messages: [{ role: 'user', content: [
+        { type: 'text', text: prompt + '\n\nYou MUST return valid JSON. No explanation, no markdown, only the JSON object.' },
+        { type: 'image', source: { type: 'base64', media_type: mimeType, data: base64 } }
+      ]}]
+    };
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) {
+      let detail = '';
+      try { const err = await res.json(); detail = err.error?.message || ''; } catch {}
+      throw new Error(`Claude request failed (${res.status}${detail ? ': ' + detail : ''})`);
+    }
+    const json = await res.json();
+    const text = json.content?.[0]?.text || '';
+    if (!text) throw new Error('Claude returned an empty response.');
+    const cleaned = text.replace(/```json/gi, '').replace(/```/g, '').trim();
+    const start = cleaned.indexOf('{');
+    const end = cleaned.lastIndexOf('}');
+    return start >= 0 && end >= start ? cleaned.slice(start, end + 1) : cleaned;
+  }
+
   // Default: Gemini
   const body = {
     contents: [{ role: 'user', parts: [{ inlineData: { mimeType, data: base64 } }, { text: prompt }] }],
