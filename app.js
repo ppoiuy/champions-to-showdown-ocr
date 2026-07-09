@@ -489,6 +489,9 @@ function onTeamEdit(e) {
   } else {
     mon[field] = value;
   }
+  if (field === 'species' && state.experimentalLearnset && state.data && state.data.learnsets) {
+    buildDatalists();
+  }
   validateAndRender();
 }
 
