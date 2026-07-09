@@ -22,8 +22,14 @@
     </header>
 
     <details class="panel" open>
-      <summary class="panel-head" style="cursor:pointer"><h2>How to get your screenshots</h2></summary>
-      <p style="margin:0">From the Pokemon Champions home page: <strong>Train</strong> → <strong>Replica Teams</strong> → <strong>Share Your Battle Teams</strong> → choose a team → <strong>View Details</strong>. Take a screenshot of the <strong>Moves &amp; More</strong> tab and a screenshot of the <strong>Stats</strong> tab. Each screenshot shows all 6 Pokemon at once.</p>
+      <summary class="panel-head" style="cursor:pointer"><h2>Screenshot Location Instructions</h2></summary>
+      <p style="margin:0">From the Pokemon Champions home page:</p>
+      <ol style="margin:8px 0 0;padding-left:20px">
+        <li><strong>Train</strong> → <strong>Replica Teams</strong> → <strong>Share Your Battle Teams</strong></li>
+        <li>Choose a team, then tap <strong>View Details</strong></li>
+        <li>Screenshot the <strong>Moves &amp; More</strong> tab</li>
+        <li>Screenshot the <strong>Stats</strong> tab</li>
+      </ol>
     </details>
 
     <div class="workbench">
@@ -88,13 +94,11 @@
       </aside>
     </div>
 
-    <section class="panel key-panel" id="keyPanel">
-      <div class="panel-head">
-        <h2>Gemini API Key</h2>
-      </div>
+    <details class="panel key-panel" id="keyPanel">
+      <summary class="panel-head" style="cursor:pointer"><h2>Gemini API Key</h2></summary>
       <div class="key-grid">
         <label class="field">
-          <span>Gemini API key</span>
+          <span>API key</span>
           <input id="geminiKey" type="password" autocomplete="off" spellcheck="false" inputmode="text" placeholder="Enter your Gemini API key" />
         </label>
         <label class="save-toggle">
@@ -102,9 +106,8 @@
           <span>Save key</span>
         </label>
       </div>
-      <p class="warning-inline">A Gemini API key is required.</p>
-      <a class="api-link" href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer">Get a free API key from Google AI Studio</a>
-    </section>
+      <p class="warning-inline">A Gemini API key is required. <a class="api-link" href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer">Get a free API key</a></p>
+    </details>
   </main>
 </body>
 </html>
