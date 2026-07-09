@@ -4,7 +4,7 @@ Convert Pokemon Champions team detail screenshots into Showdown format text.
 
 Live site: https://ppoiuy.github.io/pokemon-champions-showdown-format-screenshot-ocr/
 
-Updated for Regulation M-B.
+Updated for Regulation M-B. New regulations may bring new Pokemon, moves, abilities, and forms.
 
 ## Usage
 
