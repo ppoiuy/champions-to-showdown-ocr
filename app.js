@@ -103,7 +103,6 @@ function wireEvents() {
     }
   });
   for (const input of [els.geminiKey]) {
-    input.addEventListener('paste', e => e.preventDefault());
     input.addEventListener('copy', e => e.preventDefault());
     input.addEventListener('cut', e => e.preventDefault());
   }
