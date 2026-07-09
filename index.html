@@ -117,10 +117,10 @@
         <label class="field">
           <span>Provider</span>
           <select id="aiProvider" class="team-input">
-            <option value="gemini">Google Gemini</option>
-            <option value="openai">OpenAI</option>
-            <option value="deepseek">DeepSeek</option>
-            <option value="claude">Claude</option>
+            <option value="gemini">Google Gemini (free tier)</option>
+            <option value="deepseek">DeepSeek (free credits)</option>
+            <option value="openai">OpenAI (paid)</option>
+            <option value="claude">Claude (paid)</option>
           </select>
         </label>
         <label class="field">
@@ -132,7 +132,14 @@
           <span>Save key</span>
         </label>
       </div>
-      <p class="warning-inline">A valid API key is required. <a class="api-link" href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer">Get a Gemini key</a> · <a class="api-link" href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer">Get an OpenAI key</a></p>
+      <p class="warning-inline">A valid API key is required.</p>
+      <div class="api-links">
+        <a class="api-link" href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer">Get a Gemini key</a>
+        <a class="api-link" href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer">Get an OpenAI key</a>
+        <a class="api-link" href="https://platform.deepseek.com/api_keys" target="_blank" rel="noopener noreferrer">Get a DeepSeek key</a>
+        <a class="api-link" href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener noreferrer">Get a Claude key</a>
+      </div>
+      <p class="key-hint">Running low on free tokens? Create a new account for additional free credits.</p>
     </details>
   </main>
 </body>

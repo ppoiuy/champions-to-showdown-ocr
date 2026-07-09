@@ -56,6 +56,19 @@ h1 { margin: 0; font-size: clamp(28px, 5vw, 44px); line-height: 1.05; }
 
 .api-link:hover { text-decoration: underline; }
 
+.api-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-top: 10px;
+}
+
+.key-hint {
+  color: var(--muted);
+  font-size: 12px;
+  margin: 8px 0 0;
+}
+
 .key-banner {
   background: linear-gradient(135deg, rgba(255, 204, 102, .15), rgba(255, 204, 102, .08));
   border: 1px solid rgba(255, 204, 102, .3);
