@@ -141,7 +141,7 @@ const state = {
   fuzzyMatch: true,
   formLookup: false,
   customFormMatch: true,
-  experimentalLearnset: true,
+  learnsetCheck: true,
   movesFile: null,
   statsFile: null,
   movesDataUrl: '',
@@ -168,7 +168,7 @@ function init() {
     validateAndRender();
     buildDatalists();
     renderTeamEditor();
-    if (state.experimentalLearnset) await loadLearnsetData();
+    if (state.learnsetCheck) await loadLearnsetData();
   }).catch(err => {
     setWarnings([{ kind: 'bad', text: `Failed to load validation data: ${err.message}` }]);
   });
@@ -177,7 +177,7 @@ function init() {
 function bindElements() {
   [
     'geminiKey', 'saveKey', 'aiProvider', 'autoMega', 'fuzzyMatch', 'formLookup', 'customFormMatch',
-    'experimentalLearnset', 'movesFile', 'statsFile', 'movesPreview', 'statsPreview',
+    'learnsetCheck', 'movesFile', 'statsFile', 'movesPreview', 'statsPreview',
     'movesStatus', 'statsStatus', 'teamEditor', 'exportText', 'warningList', 'runOcr', 'clearAll', 'copyPaste', 'keyPanel', 'ocrStatus', 'keyBanner', 'datalistContainer'
   ].forEach(id => { els[id] = document.getElementById(id); });
 }
@@ -190,7 +190,7 @@ function wireEvents() {
   els.fuzzyMatch.checked = state.fuzzyMatch;
   els.formLookup.checked = state.formLookup;
   els.customFormMatch.checked = state.customFormMatch;
-  els.experimentalLearnset.checked = state.experimentalLearnset;
+  els.learnsetCheck.checked = state.learnsetCheck;
 
   els.saveKey.addEventListener('change', () => {
     state.saveKey = els.saveKey.checked;
@@ -223,9 +223,9 @@ function wireEvents() {
   els.customFormMatch.addEventListener('change', () => {
     state.customFormMatch = els.customFormMatch.checked;
   });
-  els.experimentalLearnset.addEventListener('change', () => {
-    state.experimentalLearnset = els.experimentalLearnset.checked;
-    if (state.experimentalLearnset && state.data && !state.data.learnsets) {
+  els.learnsetCheck.addEventListener('change', () => {
+    state.learnsetCheck = els.learnsetCheck.checked;
+    if (state.learnsetCheck && state.data && !state.data.learnsets) {
       loadLearnsetData();
     }
     if (state.data) {
@@ -400,7 +400,7 @@ function buildDatalists() {
     'dl-moves': allMoves,
   };
 
-  if (state.experimentalLearnset && data.learnsets) {
+  if (state.learnsetCheck && data.learnsets) {
     const teamSpeciesIds = new Set();
     for (const mon of state.team) {
       if (!mon.species) continue;
@@ -490,7 +490,7 @@ function onTeamEdit(e) {
   } else {
     mon[field] = value;
   }
-  if (field === 'species' && state.experimentalLearnset && state.data && state.data.learnsets) {
+  if (field === 'species' && state.learnsetCheck && state.data && state.data.learnsets) {
     buildDatalists();
   }
   validateAndRender();
@@ -636,13 +636,13 @@ function validateTeam(team, data, autoMega) {
       if (!data.naturesByName.has(n)) perMonWarnings.push({ slot: `Slot ${idx + 1}`, kind: 'bad', text: `unknown nature "${mon.nature}".` });
     }
 
-    if (state.experimentalLearnset && speciesEntry && data.learnsets) {
+    if (state.learnsetCheck && speciesEntry && data.learnsets) {
       const speciesId = speciesEntry.id;
       const learnset = data.learnsets[speciesId];
       if (learnset && learnset.learnset) {
         for (const move of moveNames) {
           if (!learnset.learnset[move]) {
-            perMonWarnings.push({ slot: `Slot ${idx + 1}`, kind: 'bad', text: `[Experimental] ${speciesEntry.name} cannot learn "${move}".` });
+            perMonWarnings.push({ slot: `Slot ${idx + 1}`, kind: 'bad', text: `${speciesEntry.name} cannot learn "${move}".` });
           }
         }
       }
@@ -651,7 +651,7 @@ function validateTeam(team, data, autoMega) {
         const abilityKeys = [legalAbilities['0'], legalAbilities['1'], legalAbilities['H'], legalAbilities['S']].filter(Boolean);
         const abilityOk = abilityKeys.some(a => normalizeLookup(a) === ability);
         if (!abilityOk) {
-          perMonWarnings.push({ slot: `Slot ${idx + 1}`, kind: 'bad', text: `[Experimental] "${mon.ability}" is not a legal ability for ${speciesEntry.name}.` });
+          perMonWarnings.push({ slot: `Slot ${idx + 1}`, kind: 'bad', text: `"${mon.ability}" is not a legal ability for ${speciesEntry.name}.` });
         }
       }
     }
@@ -1055,7 +1055,7 @@ async function loadLearnsetData() {
     setWarnings([{ kind: 'bad', text: `Moveset data failed to load: ${e.message}. Check your internet connection.` }]);
     return;
   }
-  if (state.experimentalLearnset) {
+  if (state.learnsetCheck) {
     buildChampionAbilityMoveSets();
     buildDatalists();
     renderTeamEditor();

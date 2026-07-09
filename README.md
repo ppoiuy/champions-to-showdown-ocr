@@ -33,6 +33,7 @@ If you run out of free tokens, use a different Google account for a fresh Gemini
 
 ## Toggles
 
+- **Moveset + ability check** (default: on) — filters move and ability dropdowns, and validates each Pokemon's learnset against Showdown data
 - **Auto-format Mega** (default: off) — rewrites species to Mega form and swaps ability when a Mega Stone item is detected
 - **Fuzzy match** (default: on) — corrects close OCR misspellings against the Showdown dataset using Levenshtein distance
 - **AI form lookup** (default: off, unreliable) — asks the AI to identify the Pokemon sprite and return the correct form name
@@ -44,6 +45,7 @@ If you run out of free tokens, use a different Google account for a fresh Gemini
 - AI form lookup is unreliable — the AI often misidentifies sprites or returns the wrong form suffix.
 - The tool uses Pokemon Showdown data for validation. Pokemon Champions may have a different legal move/item pool.
 - Stat points are capped at 32 per stat and 66 total based on Pokemon Champions rules.
+- The moveset + ability check requires loading ~3MB of learnset data the first time it is enabled.
 
 The following forms cannot be automatically detected by Custom form match because they require visual sprite, type, or stat inspection. They must be set manually in the Team Editor:
 
