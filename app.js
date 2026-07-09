@@ -142,6 +142,7 @@ const state = {
   formLookup: false,
   customFormMatch: true,
   dropdownInputs: true,
+  experimentalLearnset: false,
   movesFile: null,
   statsFile: null,
   movesDataUrl: '',
@@ -176,7 +177,7 @@ function init() {
 
 function bindElements() {
   [
-    'geminiKey', 'saveKey', 'aiProvider', 'autoMega', 'fuzzyMatch', 'formLookup', 'customFormMatch', 'dropdownInputs', 'movesFile', 'statsFile', 'movesPreview', 'statsPreview',
+    'geminiKey', 'saveKey', 'aiProvider', 'autoMega', 'fuzzyMatch', 'formLookup', 'customFormMatch',     'dropdownInputs', 'experimentalLearnset', 'movesFile', 'statsFile', 'movesPreview', 'statsPreview',
     'movesStatus', 'statsStatus', 'teamEditor', 'exportText', 'warningList', 'runOcr', 'clearAll', 'copyPaste', 'keyPanel', 'ocrStatus', 'keyBanner', 'datalistContainer'
   ].forEach(id => { els[id] = document.getElementById(id); });
 }
@@ -190,6 +191,7 @@ function wireEvents() {
   els.formLookup.checked = state.formLookup;
   els.customFormMatch.checked = state.customFormMatch;
   els.dropdownInputs.checked = state.dropdownInputs;
+  els.experimentalLearnset.checked = state.experimentalLearnset;
 
   els.saveKey.addEventListener('change', () => {
     state.saveKey = els.saveKey.checked;
@@ -230,6 +232,13 @@ function wireEvents() {
       else if (els.datalistContainer) els.datalistContainer.innerHTML = '';
       renderTeamEditor();
     } catch (e) { console.warn('Dropdown toggle error:', e); }
+  });
+  els.experimentalLearnset.addEventListener('change', () => {
+    state.experimentalLearnset = els.experimentalLearnset.checked;
+    if (state.experimentalLearnset && state.data && !state.data.learnsets) {
+      loadLearnsetData();
+    }
+    validateAndRender();
   });
 
   document.querySelectorAll('[data-pick]').forEach(btn => {
@@ -597,6 +606,27 @@ function validateTeam(team, data, autoMega) {
       const n = normalizeLookup(mon.nature.replace(/\s+nature$/i, ''));
       if (!data.naturesByName.has(n)) perMonWarnings.push({ slot: `Slot ${idx + 1}`, kind: 'bad', text: `unknown nature "${mon.nature}".` });
     }
+
+    if (state.experimentalLearnset && speciesEntry && data.learnsets) {
+      const speciesId = speciesEntry.id;
+      const learnset = data.learnsets[speciesId];
+      if (learnset && learnset.learnset) {
+        for (const move of moveNames) {
+          if (!learnset.learnset[move]) {
+            perMonWarnings.push({ slot: `Slot ${idx + 1}`, kind: 'bad', text: `[Experimental] ${speciesEntry.name} cannot learn "${move}".` });
+          }
+        }
+      }
+      const legalAbilities = speciesEntry.abilities;
+      if (legalAbilities && mon.ability.trim()) {
+        const abilityKeys = [legalAbilities['0'], legalAbilities['1'], legalAbilities['H'], legalAbilities['S']].filter(Boolean);
+        const abilityOk = abilityKeys.some(a => normalizeLookup(a) === ability);
+        if (!abilityOk) {
+          perMonWarnings.push({ slot: `Slot ${idx + 1}`, kind: 'bad', text: `[Experimental] "${mon.ability}" is not a legal ability for ${speciesEntry.name}.` });
+        }
+      }
+    }
+
     warnings.push(...perMonWarnings);
   });
   return { team, warnings };
@@ -942,6 +972,18 @@ async function loadShowdownData() {
   const data = buildDex({ pokedex, moves, abilities, items, aliases });
   state.data = data;
   return data;
+}
+
+async function loadLearnsetData() {
+  try {
+    const text = await (await fetch('https://play.pokemonshowdown.com/data/learnsets.js')).text();
+    const exports = {};
+    new Function('exports', `${text}; return exports;`)(exports);
+    state.data.learnsets = exports.BattleLearnsets || {};
+  } catch (e) {
+    console.warn('Failed to load learnset data:', e);
+  }
+  if (state.experimentalLearnset) validateAndRender();
 }
 
 async function fetchShowdownModule(url) {

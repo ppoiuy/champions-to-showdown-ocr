@@ -94,10 +94,16 @@
         <section class="panel">
           <div class="panel-head">
             <h2>Team Editor</h2>
-            <label class="toggle" title="Use dropdown autocomplete for species, items, abilities, and moves (default: off)">
-              <input id="dropdownInputs" type="checkbox" checked />
-              <span>Dropdown inputs</span>
-            </label>
+            <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+              <label class="toggle" title="Use dropdown autocomplete for species, items, abilities, and moves">
+                <input id="dropdownInputs" type="checkbox" checked />
+                <span>Dropdown inputs</span>
+              </label>
+              <label class="toggle" title="Check that each Pokemon's moves and ability are valid for that species using Showdown learnset data (experimental, default: off)">
+                <input id="experimentalLearnset" type="checkbox" />
+                <span>Learnset check</span>
+              </label>
+            </div>
           </div>
           <div id="teamEditor" class="team-editor"></div>
       <div id="datalistContainer" style="display:none"></div>
