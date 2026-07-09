@@ -753,12 +753,16 @@ function normalizeMovesTeam(team) {
 const CHAMPIONS_SETS = { species: null, items: null, moves: null, abilities: null };
 
 function initChampionsSets() {
-  if (typeof CHAMPIONS_DATA === 'undefined') return;
-  function norm(arr) { return new Set(arr.map(v => v.toLowerCase().replace(/[^a-z0-9]+/g, ''))); }
-  CHAMPIONS_SETS.species = norm(CHAMPIONS_DATA.species);
-  CHAMPIONS_SETS.items = norm(CHAMPIONS_DATA.items);
-  CHAMPIONS_SETS.moves = norm(CHAMPIONS_DATA.moves);
-  CHAMPIONS_SETS.abilities = norm(CHAMPIONS_DATA.abilities);
+  try {
+    if (typeof CHAMPIONS_DATA === 'undefined') return;
+    function norm(arr) { return new Set(arr.map(v => v.toLowerCase().replace(/[^a-z0-9]+/g, ''))); }
+    CHAMPIONS_SETS.species = norm(CHAMPIONS_DATA.species || []);
+    CHAMPIONS_SETS.items = norm(CHAMPIONS_DATA.items || []);
+    CHAMPIONS_SETS.moves = norm(CHAMPIONS_DATA.moves || []);
+    CHAMPIONS_SETS.abilities = norm(CHAMPIONS_DATA.abilities || []);
+  } catch (e) {
+    console.warn('Champions data init failed:', e);
+  }
 }
 
 function isChampionLegal(field, name) {
