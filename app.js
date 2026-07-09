@@ -704,7 +704,7 @@ async function loadImage(dataUrl) {
   });
 }
 
-async function cropImage(image, rect, index) {
+function cropImage(image, rect, index) {
   const canvas = document.createElement('canvas');
   canvas.width = Math.max(1, Math.round(image.width * rect.w));
   canvas.height = Math.max(1, Math.round(image.height * rect.h));
