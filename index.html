@@ -41,62 +41,66 @@
       <a class="api-link" href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer">Get a free API key from Google AI Studio</a>
     </section>
 
-    <section class="panel">
-      <div class="panel-head">
-        <h2>Inputs</h2>
-        <div class="actions">
-          <button id="runOcr" class="primary">Import screenshots</button>
-          <button id="clearAll" class="ghost">Reset</button>
+    <div class="workbench">
+      <div class="main-column">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Inputs</h2>
+            <div class="actions">
+              <button id="runOcr" class="primary">Import screenshots</button>
+              <button id="clearAll" class="ghost">Reset</button>
+            </div>
+          </div>
+
+          <div class="upload-grid">
+            <article class="upload-card" data-upload="moves">
+              <div class="upload-title">
+                <h3>Moves &amp; More</h3>
+                <button type="button" class="small" data-clear-upload="moves">Clear</button>
+              </div>
+              <input id="movesFile" type="file" accept="image/*" hidden />
+              <button type="button" class="dropzone" data-pick="moves">
+                <span>Click, drag &amp; drop, or paste first</span>
+                <small>Ctrl+V fills this slot first</small>
+              </button>
+              <img id="movesPreview" class="preview" alt="Moves preview" />
+              <p class="upload-status" id="movesStatus">Waiting for image</p>
+            </article>
+
+            <article class="upload-card" data-upload="stats">
+              <div class="upload-title">
+                <h3>Stats</h3>
+                <button type="button" class="small" data-clear-upload="stats">Clear</button>
+              </div>
+              <input id="statsFile" type="file" accept="image/*" hidden />
+              <button type="button" class="dropzone" data-pick="stats">
+                <span>Click, drag &amp; drop, or paste second</span>
+                <small>Ctrl+V fills this slot second</small>
+              </button>
+              <img id="statsPreview" class="preview" alt="Stats preview" />
+              <p class="upload-status" id="statsStatus">Waiting for image</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Team Editor</h2>
+            <span class="hint">Manual edits are allowed after OCR</span>
+          </div>
+          <div id="teamEditor" class="team-editor"></div>
+        </section>
+      </div>
+
+      <aside class="panel export-panel">
+        <div class="panel-head">
+          <h2>Export</h2>
+          <button id="copyPaste" class="primary">Copy paste</button>
         </div>
-      </div>
-
-      <div class="upload-grid">
-        <article class="upload-card" data-upload="moves">
-          <div class="upload-title">
-            <h3>Moves &amp; More</h3>
-            <button type="button" class="small" data-clear-upload="moves">Clear</button>
-          </div>
-          <input id="movesFile" type="file" accept="image/*" hidden />
-          <button type="button" class="dropzone" data-pick="moves">
-            <span>Click, drag &amp; drop, or paste first</span>
-            <small>Ctrl+V fills this slot first</small>
-          </button>
-          <img id="movesPreview" class="preview" alt="Moves preview" />
-          <p class="upload-status" id="movesStatus">Waiting for image</p>
-        </article>
-
-        <article class="upload-card" data-upload="stats">
-          <div class="upload-title">
-            <h3>Stats</h3>
-            <button type="button" class="small" data-clear-upload="stats">Clear</button>
-          </div>
-          <input id="statsFile" type="file" accept="image/*" hidden />
-          <button type="button" class="dropzone" data-pick="stats">
-            <span>Click, drag &amp; drop, or paste second</span>
-            <small>Ctrl+V fills this slot second</small>
-          </button>
-          <img id="statsPreview" class="preview" alt="Stats preview" />
-          <p class="upload-status" id="statsStatus">Waiting for image</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="panel">
-      <div class="panel-head">
-        <h2>Export</h2>
-        <button id="copyPaste" class="primary">Copy paste</button>
-      </div>
-      <textarea id="exportText" class="export-box" rows="18" spellcheck="false" placeholder="Your Showdown import paste appears here"></textarea>
-      <div id="warningList" class="warnings"></div>
-    </section>
-
-    <section class="panel">
-      <div class="panel-head">
-        <h2>Team Editor</h2>
-        <span class="hint">Manual edits are allowed after OCR</span>
-      </div>
-      <div id="teamEditor" class="team-editor"></div>
-    </section>
+        <textarea id="exportText" class="export-box" rows="18" spellcheck="false" placeholder="Your Showdown import paste appears here"></textarea>
+        <div id="warningList" class="warnings"></div>
+      </aside>
+    </div>
   </main>
 </body>
 </html>

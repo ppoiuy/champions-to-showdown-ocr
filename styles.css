@@ -58,6 +58,24 @@ h1 { margin: 0; font-size: clamp(28px, 5vw, 44px); line-height: 1.05; }
   box-shadow: 0 16px 40px rgba(0,0,0,.28);
 }
 
+.workbench {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 430px);
+  gap: 16px;
+  align-items: start;
+}
+
+.main-column {
+  min-width: 0;
+}
+
+.export-panel {
+  position: sticky;
+  top: 16px;
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+}
+
 .panel-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
 .panel-head h2, .upload-title h3 { margin: 0; }
 .actions { display: flex; gap: 8px; }
@@ -213,12 +231,18 @@ h1 { margin: 0; font-size: clamp(28px, 5vw, 44px); line-height: 1.05; }
 }
 
 .export-box {
-  min-height: 360px;
+  min-height: min(460px, calc(100vh - 220px));
   resize: vertical;
   white-space: pre;
 }
 
 @media (max-width: 900px) {
-  .hero, .panel-head, .key-grid, .upload-grid, .team-grid, .team-subgrid, .moves-grid { grid-template-columns: 1fr; display: grid; }
+  .hero, .panel-head, .key-grid, .upload-grid, .team-grid, .team-subgrid, .moves-grid, .workbench { grid-template-columns: 1fr; display: grid; }
   .hero { align-items: start; }
+  .export-panel {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+  .export-box { min-height: 320px; }
 }
