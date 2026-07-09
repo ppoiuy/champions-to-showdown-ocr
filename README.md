@@ -13,7 +13,6 @@ This tool is intended for quickly sharing or saving teams from Pokemon Champions
    - From the Pokemon Champions home page: **Train** → **Replica Teams** → **Share Your Battle Teams** → choose a team → **View Details**
    - Screenshot the **Moves & More** tab.
    - Screenshot the **Stats** tab.
-   - Repeat for each team member.
 3. Add the `Moves & More` screenshot.
 4. Add the `Stats` screenshot.
 5. Enter a Gemini API key for best OCR results, or continue with the built-in Tesseract fallback.
