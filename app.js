@@ -156,8 +156,7 @@ function handlePaste(e) {
   const images = [...files, ...items];
   if (!images.length) return;
   e.preventDefault();
-  const kind = state.pasteIndex % 2 === 0 ? 'moves' : 'stats';
-  state.pasteIndex += 1;
+  const kind = !state.movesDataUrl ? 'moves' : !state.statsDataUrl ? 'stats' : 'moves';
   handleFilePick(kind, images[0]);
 }
 
