@@ -141,7 +141,6 @@ const state = {
   fuzzyMatch: true,
   formLookup: false,
   customFormMatch: true,
-  dropdownInputs: true,
   experimentalLearnset: false,
   movesFile: null,
   statsFile: null,
@@ -166,10 +165,8 @@ function init() {
   initChampionsSets();
   loadShowdownData().then(async () => {
     validateAndRender();
-    if (state.dropdownInputs) {
-      buildDatalists();
-      renderTeamEditor();
-    }
+    buildDatalists();
+    renderTeamEditor();
     if (state.experimentalLearnset) await loadLearnsetData();
   }).catch(err => {
     setWarnings([{ kind: 'bad', text: `Failed to load validation data: ${err.message}` }]);
@@ -178,7 +175,8 @@ function init() {
 
 function bindElements() {
   [
-    'geminiKey', 'saveKey', 'aiProvider', 'autoMega', 'fuzzyMatch', 'formLookup', 'customFormMatch',     'dropdownInputs', 'experimentalLearnset', 'movesFile', 'statsFile', 'movesPreview', 'statsPreview',
+    'geminiKey', 'saveKey', 'aiProvider', 'autoMega', 'fuzzyMatch', 'formLookup', 'customFormMatch',
+    'experimentalLearnset', 'movesFile', 'statsFile', 'movesPreview', 'statsPreview',
     'movesStatus', 'statsStatus', 'teamEditor', 'exportText', 'warningList', 'runOcr', 'clearAll', 'copyPaste', 'keyPanel', 'ocrStatus', 'keyBanner', 'datalistContainer'
   ].forEach(id => { els[id] = document.getElementById(id); });
 }
@@ -191,7 +189,6 @@ function wireEvents() {
   els.fuzzyMatch.checked = state.fuzzyMatch;
   els.formLookup.checked = state.formLookup;
   els.customFormMatch.checked = state.customFormMatch;
-  els.dropdownInputs.checked = state.dropdownInputs;
   els.experimentalLearnset.checked = state.experimentalLearnset;
 
   els.saveKey.addEventListener('change', () => {
@@ -225,19 +222,14 @@ function wireEvents() {
   els.customFormMatch.addEventListener('change', () => {
     state.customFormMatch = els.customFormMatch.checked;
   });
-  els.dropdownInputs.addEventListener('click', () => {
-    try {
-      const on = els.dropdownInputs.checked;
-      state.dropdownInputs = on;
-      if (on && state.data) buildDatalists();
-      else if (els.datalistContainer) els.datalistContainer.innerHTML = '';
-      renderTeamEditor();
-    } catch (e) { console.warn('Dropdown toggle error:', e); }
-  });
   els.experimentalLearnset.addEventListener('change', () => {
     state.experimentalLearnset = els.experimentalLearnset.checked;
     if (state.experimentalLearnset && state.data && !state.data.learnsets) {
       loadLearnsetData();
+    }
+    if (state.data) {
+      buildDatalists();
+      renderTeamEditor();
     }
     validateAndRender();
   });
@@ -366,7 +358,7 @@ async function runOcr() {
     renderTeamEditor();
     validateAndRender();
     els.ocrStatus.textContent = 'Done. Review and copy the paste below.';
-    if (state.dropdownInputs && state.data) buildDatalists();
+    if (state.data) buildDatalists();
   } catch (err) {
     els.ocrStatus.textContent = '';
     setWarnings([{ kind: 'bad', text: err.message || 'OCR failed.' }]);
@@ -443,7 +435,7 @@ function buildDatalists() {
 
 function renderTeamEditor() {
   els.teamEditor.innerHTML = '';
-  const dl = state.dropdownInputs ? ' list="dl-' : '';
+  const dl = ' list="dl-';
   state.team.forEach((mon, i) => {
     const card = document.createElement('article');
     card.className = 'team-card';
@@ -1018,7 +1010,11 @@ async function loadLearnsetData() {
     setWarnings([{ kind: 'bad', text: `Moveset data failed to load: ${e.message}. Check your internet connection.` }]);
     return;
   }
-  if (state.experimentalLearnset) validateAndRender();
+  if (state.experimentalLearnset) {
+    buildDatalists();
+    renderTeamEditor();
+    validateAndRender();
+  }
 }
 
 async function fetchShowdownModule(url) {
