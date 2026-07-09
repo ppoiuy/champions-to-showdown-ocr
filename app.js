@@ -397,13 +397,45 @@ function mergeTeams(movesTeam, statsTeam) {
 function buildDatalists() {
   if (!state.data || !els.datalistContainer) return;
   const data = state.data;
+  const allAbilities = [...data.abilitiesByName.values()].map(e => e.name).filter(n => isChampionLegal('abilities', n)).sort();
+  const allMoves = [...data.movesByName.values()].map(e => e.name).filter(n => isChampionLegal('moves', n)).sort();
   const lists = {
     'dl-species': [...data.speciesByName.values()].map(e => e.name).filter(n => isChampionLegal('species', n)).sort(),
     'dl-items': [...data.itemsByName.values()].map(e => e.name).filter(n => isChampionLegal('items', n)).sort(),
-    'dl-abilities': [...data.abilitiesByName.values()].map(e => e.name).filter(n => isChampionLegal('abilities', n)).sort(),
+    'dl-abilities': allAbilities,
     'dl-natures': [...data.naturesByName.values()].map(e => e).sort(),
-    'dl-moves': [...data.movesByName.values()].map(e => e.name).filter(n => isChampionLegal('moves', n)).sort(),
+    'dl-moves': allMoves,
   };
+
+  if (state.experimentalLearnset && data.learnsets) {
+    const teamSpeciesIds = new Set();
+    for (const mon of state.team) {
+      if (!mon.species) continue;
+      const entry = data.findSpecies(mon.species);
+      if (entry) teamSpeciesIds.add(entry.id);
+    }
+    if (teamSpeciesIds.size > 0) {
+      const learnableMoves = new Set();
+      const learnableAbilities = new Set();
+      for (const id of teamSpeciesIds) {
+        const ls = data.learnsets[id];
+        if (ls && ls.learnset) Object.keys(ls.learnset).forEach(m => learnableMoves.add(m));
+        const entry = data.findSpecies(id);
+        if (entry && entry.abilities) {
+          const abils = [entry.abilities['0'], entry.abilities['1'], entry.abilities['H'], entry.abilities['S']].filter(Boolean);
+          abils.forEach(a => learnableAbilities.add(a));
+        }
+      }
+      if (learnableMoves.size > 0) {
+        lists['dl-moves'] = allMoves.filter(n => learnableMoves.has(n.toLowerCase().replace(/[^a-z0-9]+/g, '')));
+      }
+      if (learnableAbilities.size > 0) {
+        const abilitySet = new Set([...learnableAbilities].map(a => a.toLowerCase().replace(/[^a-z0-9]+/g, '')));
+        lists['dl-abilities'] = allAbilities.filter(n => abilitySet.has(n.toLowerCase().replace(/[^a-z0-9]+/g, '')));
+      }
+    }
+  }
+
   els.datalistContainer.innerHTML = Object.entries(lists).map(([id, names]) =>
     `<datalist id="${id}">${names.map(n => `<option value="${escapeHtml(n)}">`).join('')}</datalist>`
   ).join('');
