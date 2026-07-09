@@ -164,6 +164,7 @@ function init() {
   restoreCachedScreenshots();
   initChampionsSets();
   loadShowdownData().then(async () => {
+    buildChampionAbilityMoveSets();
     validateAndRender();
     buildDatalists();
     renderTeamEditor();
@@ -829,6 +830,32 @@ function initChampionsSets() {
   CHAMPIONS_SETS.abilities = C_ABILITIES;
 }
 
+function buildChampionAbilityMoveSets() {
+  if (!state.data) return;
+  const data = state.data;
+  const abilitiesSet = new Set();
+  const movesSet = new Set();
+
+  for (const normName of C_SPECIES) {
+    const entry = data.speciesByName.get(normName);
+    if (!entry) continue;
+    if (entry.abilities) {
+      for (const key of ['0', '1', 'H', 'S']) {
+        if (entry.abilities[key]) abilitiesSet.add(entry.abilities[key].toLowerCase().replace(/[^a-z0-9]+/g, ''));
+      }
+    }
+  }
+
+  for (const normName of C_SPECIES) {
+    if (data.learnsets && data.learnsets[normName] && data.learnsets[normName].learnset) {
+      Object.keys(data.learnsets[normName].learnset).forEach(m => movesSet.add(m));
+    }
+  }
+
+  if (abilitiesSet.size > 0) CHAMPIONS_SETS.abilities = abilitiesSet;
+  if (movesSet.size > 0) CHAMPIONS_SETS.moves = movesSet;
+}
+
 function isChampionLegal(field, name) {
   const set = CHAMPIONS_SETS[field];
   if (!set || !name) return true;
@@ -1014,6 +1041,7 @@ async function loadLearnsetData() {
     return;
   }
   if (state.experimentalLearnset) {
+    buildChampionAbilityMoveSets();
     buildDatalists();
     renderTeamEditor();
     validateAndRender();
