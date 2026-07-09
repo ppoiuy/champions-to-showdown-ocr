@@ -458,8 +458,8 @@ async function extractTeamFromScreenshot(kind, dataUrl) {
 - ability (string): the ability name
 - level (number): the numeric level
 - statPoints (object): { hp, atk, def, spa, spd, spe } — the small allocated stat point numbers (0-32 each, shown on the right side of each stat row). NOT the large base stat numbers.
-- natureUp (string|null): the stat boosted by nature (look for a red up arrow next to a stat)
-- natureDown (string|null): the stat lowered by nature (look for a blue down arrow next to a stat)
+- natureUp (string|null): the stat boosted by nature. Look for a RED UP ARROW — it appears DIRECTLY to the right of the boosted stat's name in the stat list. The arrow is positioned immediately after the stat label (e.g. "Atk ↑"). Identify the stat name that the arrow is next to.
+- natureDown (string|null): the stat lowered by nature. Look for a BLUE DOWN ARROW — it appears DIRECTLY to the right of the lowered stat's name in the stat list. The arrow is positioned immediately after the stat label (e.g. "SpD ↓"). Identify the stat name that the arrow is next to.
 
 Use exact English names as shown.`
     : `You are analyzing a Pokemon Champions "Moves & More" screen. It shows 6 Pokemon cards arranged in a grid (2 columns, 3 rows). Read left-to-right, top-to-bottom. Return a JSON object with a "team" array of exactly 6 objects. Each object MUST have the following fields. Do not skip any field.
