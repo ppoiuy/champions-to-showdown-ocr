@@ -15,10 +15,16 @@
         <h1>Showdown Import OCR</h1>
         <p class="subtitle">Upload the Moves & More and Stats screenshots, then copy a single Showdown paste.</p>
       </div>
-      <label class="mega-toggle">
-        <input id="autoMega" type="checkbox" />
-        <span>Auto-format Mega</span>
-      </label>
+      <div class="header-toggles">
+        <label class="toggle">
+          <input id="autoMega" type="checkbox" />
+          <span>Auto-format Mega</span>
+        </label>
+        <label class="toggle">
+          <input id="fuzzyMatch" type="checkbox" checked />
+          <span>Fuzzy match</span>
+        </label>
+      </div>
     </header>
 
     <div id="keyBanner" class="key-banner">Enter your Gemini API key at the bottom of the page to enable OCR.</div>

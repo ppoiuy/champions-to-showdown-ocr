@@ -44,7 +44,8 @@ const DEFAULT_TEAM = Array.from({ length: 6 }, (_, i) => ({
 const state = {
   geminiKey: loadSavedKey(),
   saveKey: hasSavedKey(),
-  autoMega: true,
+  autoMega: false,
+  fuzzyMatch: true,
   movesFile: null,
   statsFile: null,
   movesDataUrl: '',
@@ -73,7 +74,7 @@ function init() {
 
 function bindElements() {
   [
-    'geminiKey', 'saveKey', 'autoMega', 'movesFile', 'statsFile', 'movesPreview', 'statsPreview',
+    'geminiKey', 'saveKey', 'autoMega', 'fuzzyMatch', 'movesFile', 'statsFile', 'movesPreview', 'statsPreview',
     'movesStatus', 'statsStatus', 'teamEditor', 'exportText', 'warningList', 'runOcr', 'clearAll', 'copyPaste', 'keyPanel', 'ocrStatus', 'keyBanner'
   ].forEach(id => { els[id] = document.getElementById(id); });
 }
@@ -82,6 +83,7 @@ function wireEvents() {
   els.geminiKey.value = state.geminiKey;
   els.saveKey.checked = state.saveKey;
   els.autoMega.checked = state.autoMega;
+  els.fuzzyMatch.checked = state.fuzzyMatch;
 
   els.saveKey.addEventListener('change', () => {
     state.saveKey = els.saveKey.checked;
@@ -100,6 +102,9 @@ function wireEvents() {
   els.autoMega.addEventListener('change', () => {
     state.autoMega = els.autoMega.checked;
     validateAndRender();
+  });
+  els.fuzzyMatch.addEventListener('change', () => {
+    state.fuzzyMatch = els.fuzzyMatch.checked;
   });
 
   document.querySelectorAll('[data-pick]').forEach(btn => {
@@ -197,14 +202,15 @@ async function runOcr() {
   if (state.saveKey) setSavedKey(state.geminiKey.trim());
   els.runOcr.disabled = true;
   els.runOcr.textContent = 'Importing...';
-  els.ocrStatus.textContent = 'Sending screenshots to Gemini...';
+  els.ocrStatus.innerHTML = '<span class="spinner"></span> Sending screenshots to Gemini...';
   try {
     const [movesTeam, statsTeam] = await Promise.all([
       extractTeamFromScreenshot('moves', state.movesDataUrl),
       extractTeamFromScreenshot('stats', state.statsDataUrl)
     ]);
-    els.ocrStatus.textContent = 'Processing results...';
+    els.ocrStatus.innerHTML = '<span class="spinner"></span> Processing results...';
     mergeTeams(movesTeam, statsTeam);
+    if (state.data && state.fuzzyMatch) correctTeamNames(state.team, state.data);
     renderTeamEditor();
     validateAndRender();
     els.ocrStatus.textContent = 'Done. Review and copy the paste below.';
@@ -451,7 +457,7 @@ async function extractTeamFromScreenshot(kind, dataUrl) {
 - item (string): the held item name
 - ability (string): the ability name
 - level (number): the numeric level
-- statPoints (object): { hp, atk, def, spa, spd, spe } — the numeric stat point values
+- statPoints (object): { hp, atk, def, spa, spd, spe } — the small allocated stat point numbers (0-32 each, shown on the right side of each stat row). NOT the large base stat numbers.
 - natureUp (string|null): the stat boosted by nature (look for a red up arrow next to a stat)
 - natureDown (string|null): the stat lowered by nature (look for a blue down arrow next to a stat)
 
@@ -539,6 +545,66 @@ function natureFromBoostDrop(up, down) {
 function normalizeNatureStat(stat) {
   const v = normalizeLookup(stat).replace(/\./g, '');
   return NATURE_STAT_ALIASES[v] || v;
+}
+
+function levenshteinDistance(a, b) {
+  if (a.length < b.length) [a, b] = [b, a];
+  if (b.length === 0) return a.length;
+  const row = Array.from({ length: b.length + 1 }, (_, i) => i);
+  for (let i = 1; i <= a.length; i++) {
+    let prev = i;
+    for (let j = 1; j <= b.length; j++) {
+      const cur = a[i - 1] === b[j - 1] ? row[j - 1] : 1 + Math.min(row[j - 1], prev, row[j]);
+      row[j - 1] = prev;
+      prev = cur;
+    }
+    row[b.length] = prev;
+  }
+  return row[b.length];
+}
+
+function fuzzyMatchName(raw, dataMap, threshold = 2) {
+  if (!raw) return '';
+  const normalized = normalizeLookup(raw);
+  if (dataMap.has(normalized)) return dataMap.get(normalized).name;
+  let best = '', bestDist = Infinity;
+  for (const [key, entry] of dataMap) {
+    const dist = levenshteinDistance(normalized, key);
+    if (dist < bestDist) { bestDist = dist; best = entry.name; }
+  }
+  if (bestDist > 0 && bestDist <= threshold) return best;
+  return '';
+}
+
+function correctTeamNames(team, data) {
+  for (const mon of team) {
+    if (mon.species) {
+      const fixed = fuzzyMatchName(mon.species, data.speciesByName, 3);
+      if (fixed) mon.species = fixed;
+    }
+    if (mon.item) {
+      const fixed = fuzzyMatchName(mon.item, data.itemsByName, 3);
+      if (fixed) mon.item = fixed;
+    }
+    if (mon.ability) {
+      const fixed = fuzzyMatchName(mon.ability, data.abilitiesByName, 3);
+      if (fixed) mon.ability = fixed;
+    }
+    if (mon.nature) {
+      const raw = normalizeLookup(mon.nature.replace(/\s+nature$/i, ''));
+      let bestName = '', bestDist = Infinity;
+      for (const [key, entry] of data.naturesByName) {
+        const dist = levenshteinDistance(raw, key);
+        if (dist < bestDist) { bestDist = dist; bestName = entry; }
+      }
+      if (bestDist <= 2) mon.nature = bestName;
+    }
+    mon.moves = (mon.moves || []).map(m => {
+      if (!m) return m;
+      const fixed = fuzzyMatchName(m, data.movesByName, 3);
+      return fixed || m;
+    });
+  }
 }
 
 async function loadShowdownData() {
