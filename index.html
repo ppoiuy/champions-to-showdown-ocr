@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pokemon Champions Showdown OCR</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="https://unpkg.com/tesseract.js@4.1.1/dist/tesseract.min.js"></script>
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <main class="app">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Pokemon Champions</p>
+        <h1>Showdown Import OCR</h1>
+        <p class="subtitle">Upload the Moves & More and Stats screenshots, then copy a single Showdown paste.</p>
+      </div>
+      <label class="mega-toggle">
+        <input id="autoMega" type="checkbox" checked />
+        <span>Auto-format Mega</span>
+      </label>
+    </header>
+
+    <section class="panel key-panel" id="keyPanel">
+      <div class="panel-head">
+        <h2>Gemini OCR</h2>
+        <span class="hint">Saved key enables vision OCR by default</span>
+      </div>
+      <div class="key-grid">
+        <label class="field">
+          <span>Gemini API key</span>
+          <input id="geminiKey" type="password" autocomplete="off" spellcheck="false" inputmode="text" placeholder="Enter your Gemini API key" />
+        </label>
+        <label class="save-toggle">
+          <input id="saveKey" type="checkbox" />
+          <span>Save key</span>
+        </label>
+      </div>
+      <p class="warning-inline">Gemini OCR is recommended. If no key is saved, the app falls back to Tesseract OCR.</p>
+      <a class="api-link" href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer">Get a free API key from Google AI Studio</a>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Inputs</h2>
+        <div class="actions">
+          <button id="runOcr" class="primary">Import screenshots</button>
+          <button id="clearAll" class="ghost">Reset</button>
+        </div>
+      </div>
+
+      <div class="upload-grid">
+        <article class="upload-card" data-upload="moves">
+          <div class="upload-title">
+            <h3>Moves &amp; More</h3>
+            <button type="button" class="small" data-clear-upload="moves">Clear</button>
+          </div>
+          <input id="movesFile" type="file" accept="image/*" hidden />
+          <button type="button" class="dropzone" data-pick="moves">
+            <span>Click, drag &amp; drop, or paste first</span>
+            <small>Ctrl+V fills this slot first</small>
+          </button>
+          <img id="movesPreview" class="preview" alt="Moves preview" />
+          <p class="upload-status" id="movesStatus">Waiting for image</p>
+        </article>
+
+        <article class="upload-card" data-upload="stats">
+          <div class="upload-title">
+            <h3>Stats</h3>
+            <button type="button" class="small" data-clear-upload="stats">Clear</button>
+          </div>
+          <input id="statsFile" type="file" accept="image/*" hidden />
+          <button type="button" class="dropzone" data-pick="stats">
+            <span>Click, drag &amp; drop, or paste second</span>
+            <small>Ctrl+V fills this slot second</small>
+          </button>
+          <img id="statsPreview" class="preview" alt="Stats preview" />
+          <p class="upload-status" id="statsStatus">Waiting for image</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Team Editor</h2>
+        <span class="hint">Manual edits are allowed after OCR</span>
+      </div>
+      <div id="teamEditor" class="team-editor"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Export</h2>
+        <button id="copyPaste" class="primary">Copy paste</button>
+      </div>
+      <textarea id="exportText" class="export-box" rows="18" spellcheck="false" placeholder="Your Showdown import paste appears here"></textarea>
+      <div id="warningList" class="warnings"></div>
+    </section>
+  </main>
+</body>
+</html>
