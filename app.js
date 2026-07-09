@@ -754,7 +754,7 @@ const CHAMPIONS_SETS = { species: null, items: null, moves: null, abilities: nul
 
 function initChampionsSets() {
   try {
-    if (typeof CHAMPIONS_DATA === 'undefined') return;
+    if (typeof window.CHAMPIONS_DATA === 'undefined') return;
     function norm(arr) { return new Set(arr.map(v => v.toLowerCase().replace(/[^a-z0-9]+/g, ''))); }
     CHAMPIONS_SETS.species = norm(CHAMPIONS_DATA.species || []);
     CHAMPIONS_SETS.items = norm(CHAMPIONS_DATA.items || []);

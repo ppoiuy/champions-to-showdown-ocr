@@ -1,4 +1,4 @@
-const CHAMPIONS_DATA = {
+var CHAMPIONS_DATA = {
   species: [
     "Abomasnow","Abomasnow-Mega","Absol","Absol-Mega","Aegislash","Aegislash-Blade","Aegislash-Shield",
     "Aerodactyl","Aerodactyl-Mega","Aggron","Aggron-Mega","Alakazam","Alakazam-Mega","Alcremie",
