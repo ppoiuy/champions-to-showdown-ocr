@@ -183,7 +183,8 @@ async function runOcr() {
     return;
   }
   if (!state.geminiKey.trim()) {
-    alert('A Gemini API key is required. Enter your key in the Gemini OCR panel above.');
+    els.ocrStatus.textContent = '';
+    setWarnings([{ kind: 'bad', text: 'A Gemini API key is required. Enter your key at the bottom of the page and try again.' }]);
     return;
   }
   if (state.saveKey) setSavedKey(state.geminiKey.trim());
@@ -235,7 +236,7 @@ function renderTeamEditor() {
     card.innerHTML = `
       <div class="team-card-head">
         <h3>Slot ${i + 1}</h3>
-        <span class="hint">Imported mon</span>
+        <span class="hint">Imported Pokemon</span>
       </div>
       <div class="team-grid">
         <label class="team-block"><span class="team-label">Species</span><input class="team-input" data-field="species" data-index="${i}" value="${escapeHtml(mon.species || '')}"></label>
