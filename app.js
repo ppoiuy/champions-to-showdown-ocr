@@ -59,6 +59,7 @@ const state = {
   saveKey: hasSavedKey(),
   autoMega: false,
   fuzzyMatch: true,
+  formLookup: true,
   movesFile: null,
   statsFile: null,
   movesDataUrl: '',
@@ -88,7 +89,7 @@ function init() {
 
 function bindElements() {
   [
-    'geminiKey', 'saveKey', 'autoMega', 'fuzzyMatch', 'movesFile', 'statsFile', 'movesPreview', 'statsPreview',
+    'geminiKey', 'saveKey', 'autoMega', 'fuzzyMatch', 'formLookup', 'movesFile', 'statsFile', 'movesPreview', 'statsPreview',
     'movesStatus', 'statsStatus', 'teamEditor', 'exportText', 'warningList', 'runOcr', 'clearAll', 'copyPaste', 'keyPanel', 'ocrStatus', 'keyBanner'
   ].forEach(id => { els[id] = document.getElementById(id); });
 }
@@ -98,6 +99,7 @@ function wireEvents() {
   els.saveKey.checked = state.saveKey;
   els.autoMega.checked = state.autoMega;
   els.fuzzyMatch.checked = state.fuzzyMatch;
+  els.formLookup.checked = state.formLookup;
 
   els.saveKey.addEventListener('change', () => {
     state.saveKey = els.saveKey.checked;
@@ -119,6 +121,9 @@ function wireEvents() {
   });
   els.fuzzyMatch.addEventListener('change', () => {
     state.fuzzyMatch = els.fuzzyMatch.checked;
+  });
+  els.formLookup.addEventListener('change', () => {
+    state.formLookup = els.formLookup.checked;
   });
 
   document.querySelectorAll('[data-pick]').forEach(btn => {
@@ -483,7 +488,7 @@ async function extractTeamFromScreenshot(kind, dataUrl) {
   const prompt = kind === 'stats'
     ? `You are analyzing a Pokemon Champions "Stats" screen. It shows 6 Pokemon cards arranged in a grid (2 columns, 3 rows). Read left-to-right, top-to-bottom. Return a JSON object with a "team" array of exactly 6 objects. Each object MUST have the following fields. Do not skip any field. If a value is not visible use null.
 
-- species (string): the Pokemon species name
+- species (string): the FULL official Pokemon species name including any form. Look at the SPRITE ICON to the left of the Pokemon name — it tells you which form it is (e.g. Rotom-Wash, Rotom-Heat, Lycanroc-Midnight, Lycanroc-Dusk, Basculin-Blue-Striped, Maushold-Four, Meowstic-F, Floette-Eternal, Polteageist-Antique, Tauros-Paldea-Combat, Gourgeist-Small, etc.). Use the exact official Showdown form name with a hyphen suffix. If it's the base form with no special form, just return the species name.
 - item (string): the held item name
 - ability (string): the ability name
 - level (number): the numeric level
@@ -494,7 +499,7 @@ async function extractTeamFromScreenshot(kind, dataUrl) {
 Use exact English names as shown.`
     : `You are analyzing a Pokemon Champions "Moves & More" screen. It shows 6 Pokemon cards arranged in a grid (2 columns, 3 rows). Read left-to-right, top-to-bottom. Return a JSON object with a "team" array of exactly 6 objects. Each object MUST have the following fields. Do not skip any field.
 
-- species (string): the Pokemon species name
+- species (string): the FULL official Pokemon species name including any form. Look at the SPRITE ICON to the left of the Pokemon name — it tells you which form it is (e.g. Rotom-Wash, Rotom-Heat, Lycanroc-Midnight, Lycanroc-Dusk, Basculin-Blue-Striped, Maushold-Four, Meowstic-F, Floette-Eternal, Polteageist-Antique, Tauros-Paldea-Combat, Gourgeist-Small, etc.). Use the exact official Showdown form name with a hyphen suffix. If it's the base form with no special form, just return the species name.
 - item (string): the held item name — shown on the card
 - ability (string): the ability name — shown on the card
 - moves (array of 4 strings): exactly 4 move names in order
