@@ -600,6 +600,36 @@ async function callAI(prompt, base64, mimeType, dataUrl) {
     return start >= 0 && end >= start ? cleaned.slice(start, end + 1) : cleaned;
   }
 
+  if (provider === 'deepseek') {
+    const body = {
+      model: 'deepseek-chat',
+      messages: [{ role: 'user', content: [
+        { type: 'text', text: prompt },
+        { type: 'image_url', image_url: { url: dataUrl } }
+      ]}],
+      response_format: { type: 'json_object' },
+      temperature: 0.1,
+      max_tokens: 4096
+    };
+    const res = await fetch('https://api.deepseek.com/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) {
+      let detail = '';
+      try { const err = await res.json(); detail = err.error?.message || ''; } catch {}
+      throw new Error(`DeepSeek request failed (${res.status}${detail ? ': ' + detail : ''})`);
+    }
+    const json = await res.json();
+    const text = json.choices?.[0]?.message?.content || '';
+    if (!text) throw new Error('DeepSeek returned an empty response.');
+    const cleaned = text.replace(/```json/gi, '').replace(/```/g, '').trim();
+    const start = cleaned.indexOf('{');
+    const end = cleaned.lastIndexOf('}');
+    return start >= 0 && end >= start ? cleaned.slice(start, end + 1) : cleaned;
+  }
+
   // Default: Gemini
   const body = {
     contents: [{ role: 'user', parts: [{ inlineData: { mimeType, data: base64 } }, { text: prompt }] }],
