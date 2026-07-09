@@ -42,7 +42,7 @@ The app persists your key locally when **Save key** is enabled.
 - The tool uses Pokemon Showdown data for validation. Pokemon Champions may have a different legal move/item pool.
 - Stat points are capped at 32 per stat and 66 total based on Pokemon Champions rules.
 
-The following forms cannot be automatically detected by Custom form match because they require visual sprite, typing, or stat inspection. They must be set manually in the Team Editor:
+The following forms cannot be automatically detected by Custom form match because they require visual sprite, type, or stat inspection. They must be set manually in the Team Editor:
 
 Basculegion-F, Maushold-Four, Gourgeist-Large, Gourgeist-Small, Gourgeist-Super, Polteageist-Antique, Sinistcha-Masterpiece, Tauros-Paldea-Combat, Vivillon-Fancy, Vivillon-Pokeball
 
