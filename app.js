@@ -155,6 +155,7 @@ function init() {
   setWarnings([]);
   updateKeyBanner();
   restoreCachedScreenshots();
+  initChampionsSets();
   loadShowdownData().then(() => {
     validateAndRender();
     if (state.dropdownInputs) buildDatalists();
@@ -373,11 +374,11 @@ function buildDatalists() {
   if (!state.data || !els.datalistContainer) return;
   const data = state.data;
   const lists = {
-    'dl-species': [...data.speciesByName.values()].map(e => e.name).sort(),
-    'dl-items': [...data.itemsByName.values()].map(e => e.name).sort(),
-    'dl-abilities': [...data.abilitiesByName.values()].map(e => e.name).sort(),
+    'dl-species': [...data.speciesByName.values()].map(e => e.name).filter(n => isChampionLegal('species', n)).sort(),
+    'dl-items': [...data.itemsByName.values()].map(e => e.name).filter(n => isChampionLegal('items', n)).sort(),
+    'dl-abilities': [...data.abilitiesByName.values()].map(e => e.name).filter(n => isChampionLegal('abilities', n)).sort(),
     'dl-natures': [...data.naturesByName.values()].map(e => e).sort(),
-    'dl-moves': [...data.movesByName.values()].map(e => e.name).sort(),
+    'dl-moves': [...data.movesByName.values()].map(e => e.name).filter(n => isChampionLegal('moves', n)).sort(),
   };
   els.datalistContainer.innerHTML = Object.entries(lists).map(([id, names]) =>
     `<datalist id="${id}">${names.map(n => `<option value="${escapeHtml(n)}">`).join('')}</datalist>`
@@ -568,10 +569,14 @@ function validateTeam(team, data, autoMega) {
     const moveNames = (mon.moves || []).map(m => normalizeLookup(m)).filter(Boolean);
     const speciesEntry = data.findSpecies(species);
     if (mon.species.trim() && !speciesEntry) perMonWarnings.push({ slot: `Slot ${idx + 1}`, kind: 'bad', text: `unknown species "${mon.species}".` });
+    else if (mon.species.trim() && !isChampionLegal('species', mon.species)) perMonWarnings.push({ slot: `Slot ${idx + 1}`, kind: 'bad', text: `"${mon.species}" is not legal in Regulation M-B.` });
     if (mon.item.trim() && !data.itemsByName.has(item)) perMonWarnings.push({ slot: `Slot ${idx + 1}`, kind: 'bad', text: `unknown item "${mon.item}".` });
+    else if (mon.item.trim() && !isChampionLegal('items', mon.item)) perMonWarnings.push({ slot: `Slot ${idx + 1}`, kind: 'bad', text: `"${mon.item}" is not legal in Regulation M-B.` });
     if (mon.ability.trim() && !data.abilitiesByName.has(ability)) perMonWarnings.push({ slot: `Slot ${idx + 1}`, kind: 'bad', text: `unknown ability "${mon.ability}".` });
+    else if (mon.ability.trim() && !isChampionLegal('abilities', mon.ability)) perMonWarnings.push({ slot: `Slot ${idx + 1}`, kind: 'bad', text: `"${mon.ability}" is not legal in Regulation M-B.` });
     for (const move of moveNames) {
       if (!data.movesByName.has(move)) perMonWarnings.push({ slot: `Slot ${idx + 1}`, kind: 'bad', text: `unknown move "${move}".` });
+      else if (!isChampionLegal('moves', move)) perMonWarnings.push({ slot: `Slot ${idx + 1}`, kind: 'bad', text: `"${move}" is not legal in Regulation M-B.` });
     }
 
     if (mon.nature.trim()) {
@@ -743,6 +748,23 @@ function normalizeMovesTeam(team) {
     statPoints: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
     nature: ''
   }));
+}
+
+const CHAMPIONS_SETS = { species: null, items: null, moves: null, abilities: null };
+
+function initChampionsSets() {
+  if (!window.CHAMPIONS_DATA) return;
+  function norm(arr) { return new Set(arr.map(v => v.toLowerCase().replace(/[^a-z0-9]+/g, ''))); }
+  CHAMPIONS_SETS.species = norm(CHAMPIONS_DATA.species);
+  CHAMPIONS_SETS.items = norm(CHAMPIONS_DATA.items);
+  CHAMPIONS_SETS.moves = norm(CHAMPIONS_DATA.moves);
+  CHAMPIONS_SETS.abilities = norm(CHAMPIONS_DATA.abilities);
+}
+
+function isChampionLegal(field, name) {
+  const set = CHAMPIONS_SETS[field];
+  if (!set || !name) return true;
+  return set.has(name.toLowerCase().replace(/[^a-z0-9]+/g, ''));
 }
 
 function natureFromBoostDrop(up, down) {
