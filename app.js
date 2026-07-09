@@ -221,13 +221,13 @@ function wireEvents() {
     state.customFormMatch = els.customFormMatch.checked;
   });
   els.dropdownInputs.addEventListener('click', () => {
-    state.dropdownInputs = els.dropdownInputs.checked;
-    if (state.dropdownInputs) {
-      if (state.data) buildDatalists();
-    } else {
-      if (els.datalistContainer) els.datalistContainer.innerHTML = '';
-    }
-    renderTeamEditor();
+    try {
+      const on = els.dropdownInputs.checked;
+      state.dropdownInputs = on;
+      if (on && state.data) buildDatalists();
+      else if (els.datalistContainer) els.datalistContainer.innerHTML = '';
+      renderTeamEditor();
+    } catch (e) { console.warn('Dropdown toggle error:', e); }
   });
 
   document.querySelectorAll('[data-pick]').forEach(btn => {
