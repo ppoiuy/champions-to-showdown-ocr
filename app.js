@@ -141,7 +141,7 @@ const state = {
   fuzzyMatch: true,
   formLookup: false,
   customFormMatch: true,
-  experimentalLearnset: false,
+  experimentalLearnset: true,
   movesFile: null,
   statsFile: null,
   movesDataUrl: '',
