@@ -141,7 +141,7 @@ const state = {
   fuzzyMatch: true,
   formLookup: false,
   customFormMatch: true,
-  dropdownInputs: false,
+  dropdownInputs: true,
   movesFile: null,
   statsFile: null,
   movesDataUrl: '',
