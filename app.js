@@ -42,6 +42,35 @@ const NATURE_MAP = new Map([
   ['spe:atk', 'Timid'], ['spe:def', 'Hasty'], ['spe:spa', 'Jolly'], ['spe:spd', 'Naive']
 ]);
 
+const FORM_ALIASES = new Map([
+  ['wash rotom', 'Rotom-Wash'], ['rotom wash', 'Rotom-Wash'],
+  ['heat rotom', 'Rotom-Heat'], ['rotom heat', 'Rotom-Heat'],
+  ['frost rotom', 'Rotom-Frost'], ['rotom frost', 'Rotom-Frost'],
+  ['fan rotom', 'Rotom-Fan'], ['rotom fan', 'Rotom-Fan'],
+  ['mow rotom', 'Rotom-Mow'], ['rotom mow', 'Rotom-Mow'],
+  ['midnight lycanroc', 'Lycanroc-Midnight'], ['lycanroc midnight', 'Lycanroc-Midnight'],
+  ['dusk lycanroc', 'Lycanroc-Dusk'], ['lycanroc dusk', 'Lycanroc-Dusk'],
+  ['maushold four', 'Maushold-Four'], ['maushold 4', 'Maushold-Four'], ['maushold 3', 'Maushold-Three'],
+  ['maushold three', 'Maushold-Three'],
+  ['basculin blue', 'Basculin-Blue-Striped'], ['basculin blue striped', 'Basculin-Blue-Striped'],
+  ['basculin white', 'Basculin-White-Striped'], ['basculin white striped', 'Basculin-White-Striped'],
+  ['meowstic female', 'Meowstic-F'], ['meowstic f', 'Meowstic-F'], ['meowstic fem', 'Meowstic-F'],
+  ['meowstic male', 'Meowstic-M'], ['meowstic m', 'Meowstic-M'],
+  ['indeedee female', 'Indeedee-F'], ['indeedee f', 'Indeedee-F'], ['indeedee fem', 'Indeedee-F'],
+  ['indeedee male', 'Indeedee-M'], ['indeedee m', 'Indeedee-M'],
+  ['floette eternal', 'Floette-Eternal'], ['eternal floette', 'Floette-Eternal'],
+  ['polteageist antique', 'Polteageist-Antique'], ['antique polteageist', 'Polteageist-Antique'],
+  ['polteageist authentic', 'Polteageist-Antique'],
+  ['polteageist phony', 'Polteageist-Phony'],
+  ['gourgeist small', 'Gourgeist-Small'], ['gourgeist average', 'Gourgeist-Average'],
+  ['gourgeist large', 'Gourgeist-Large'], ['gourgeist super', 'Gourgeist-Super'],
+  ['tauros paldea', 'Tauros-Paldea'], ['tauros combat', 'Tauros-Paldea-Combat'],
+  ['tauros paldea combat', 'Tauros-Paldea-Combat'],
+  ['tauros blaze', 'Tauros-Paldea-Blaze'], ['tauros paldea blaze', 'Tauros-Paldea-Blaze'],
+  ['tauros aqua', 'Tauros-Paldea-Aqua'], ['tauros paldea aqua', 'Tauros-Paldea-Aqua'],
+  ['alolan raichu', 'Raichu-Alola'], ['alola raichu', 'Raichu-Alola'], ['raichu alola', 'Raichu-Alola'],
+]);
+
 const DEFAULT_TEAM = Array.from({ length: 6 }, (_, i) => ({
   slot: i + 1,
   species: '',
@@ -615,7 +644,16 @@ function fuzzyMatchName(raw, dataMap, threshold = 2) {
 function correctTeamNames(team, data) {
   for (const mon of team) {
     if (mon.species) {
-      const fixed = fuzzyMatchName(mon.species, data.speciesByName, 3);
+      let fixed = fuzzyMatchName(mon.species, data.speciesByName, 3);
+      if (!fixed) {
+        const normalized = normalizeLookup(mon.species);
+        for (const [alias, form] of FORM_ALIASES) {
+          if (normalized.includes(alias) || levenshteinDistance(normalized, alias) <= 2) {
+            fixed = form;
+            break;
+          }
+        }
+      }
       if (fixed) mon.species = fixed;
     }
     if (mon.item) {
