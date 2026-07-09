@@ -177,7 +177,10 @@ function wireEvents() {
     if (state.saveKey) setSavedKey(state.geminiKey.trim());
     updateKeyBanner();
   });
-  // No restrictions on the key field — any API key can be used.
+  for (const input of [els.geminiKey]) {
+    input.addEventListener('copy', e => e.preventDefault());
+    input.addEventListener('cut', e => e.preventDefault());
+  }
 
   els.autoMega.addEventListener('change', () => {
     state.autoMega = els.autoMega.checked;
