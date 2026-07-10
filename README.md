@@ -14,7 +14,7 @@ Updated for Regulation M-B. New regulations may bring new Pokemon, moves, abilit
    - Screenshot the **Moves & More** tab
    - Screenshot the **Stats** tab
 3. Upload both screenshots.
-4. Enter your AI API key at the bottom of the site. Google Gemini currently has a free model for use, with limited uses per day. You can easily create an API key for free with a Google account.
+4. Enter your AI API key at the bottom of the site. Google Gemini currently has a free model available, with limited uses per day. You can easily create an API key for free with a Google account.
 5. Click **Import screenshots**.
 6. Review the results in the Team Editor and fix any OCR mistakes.
 7. Copy the generated Showdown format text from the export panel.
