@@ -51,7 +51,7 @@ If you run out of free Gemini tokens, use a different Google account for a fresh
 ## Warnings
 
 - OCR can make mistakes. Always review the extracted data before using it.
-- Nature detection is unreliable on free Gemini. GPT and Claude produce significantly better results (untested).
+- Nature detection is unreliable on free Gemini. GPT and Claude may produce better results (untested).
 - AI form lookup is unreliable — the AI often misidentifies sprites or returns the wrong form suffix.
 - The tool uses Pokemon Showdown data for validation. Pokemon Champions may have a different legal move/item pool.
 - Stat points are capped at 32 per stat and 66 total based on Pokemon Champions rules.
