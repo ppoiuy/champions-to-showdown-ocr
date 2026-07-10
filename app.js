@@ -716,7 +716,7 @@ async function callAI(prompt, base64, mimeType, dataUrl) {
 
   if (provider === 'openai') {
     const body = {
-      model: 'gpt-4o-mini',
+      model: 'gpt-5.6-luna',
       messages: [{ role: 'user', content: [
         { type: 'text', text: prompt },
         { type: 'image_url', image_url: { url: dataUrl } }
@@ -743,7 +743,7 @@ async function callAI(prompt, base64, mimeType, dataUrl) {
 
   if (provider === 'claude') {
     const body = {
-      model: 'claude-3-5-sonnet-20241022',
+      model: 'claude-sonnet-5',
       max_tokens: 4096,
       messages: [{ role: 'user', content: [
         { type: 'text', text: prompt + '\n\nYou MUST return valid JSON. No explanation, no markdown, only the JSON object.' },

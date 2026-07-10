@@ -26,8 +26,8 @@ An API key from a supported AI provider is required. Google Gemini has a free ti
 | Provider | Model | Cost |
 |---|---|---|
 | Google Gemini | `gemini-2.5-flash` | Free tier available |
-| OpenAI | `gpt-4o-mini` | Paid |
-| Claude | `claude-3-5-sonnet-20241022` | Paid |
+| OpenAI | `gpt-5.6-luna` | Paid (untested) |
+| Claude | `claude-sonnet-5` | Paid (untested) |
 
 - [Google Gemini](https://aistudio.google.com/app/api-keys) — free tier available
 - [OpenAI](https://platform.openai.com/api-keys) — paid
@@ -37,7 +37,7 @@ The app persists your key locally when **Save key** is enabled.
 
 If you run out of free Gemini tokens, use a different Google account for a fresh key.
 
-> **Nature detection**: Free Gemini (`gemini-2.5-flash`) has limited spatial reasoning and often misidentifies which stat has the red/blue arrow, producing incorrect natures. GPT-4o-mini and Claude are much more reliable for nature detection. Always double-check natures in the Team Editor.
+> **Nature detection**: Free Gemini (`gemini-2.5-flash`) has limited spatial reasoning and often misidentifies which stat has the red/blue arrow, producing incorrect natures. GPT and Claude are much more reliable for nature detection. OpenAI and Claude integrations are untested. Always double-check natures in the Team Editor.
 
 ## Toggles
 
@@ -50,7 +50,7 @@ If you run out of free Gemini tokens, use a different Google account for a fresh
 ## Warnings
 
 - OCR can make mistakes. Always review the extracted data before using it.
-- Nature detection is unreliable on free Gemini. GPT-4o-mini and Claude produce significantly better results.
+- Nature detection is unreliable on free Gemini. GPT and Claude produce significantly better results (untested).
 - AI form lookup is unreliable — the AI often misidentifies sprites or returns the wrong form suffix.
 - The tool uses Pokemon Showdown data for validation. Pokemon Champions may have a different legal move/item pool.
 - Stat points are capped at 32 per stat and 66 total based on Pokemon Champions rules.
