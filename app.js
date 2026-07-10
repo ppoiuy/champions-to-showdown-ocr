@@ -669,6 +669,26 @@ function getMegaSpeciesFromItem(data, speciesEntry, item) {
   return targetName ? data.findSpecies(targetName) : null;
 }
 
+function extractJson(text) {
+  const cleaned = text.replace(/```json/gi, '').replace(/```/g, '').trim();
+  const firstBrace = cleaned.indexOf('{');
+  const firstBracket = cleaned.indexOf('[');
+  const start = firstBrace >= 0 && (firstBracket < 0 || firstBrace < firstBracket) ? firstBrace : firstBracket;
+  if (start < 0) return cleaned;
+  const endChar = cleaned[start] === '{' ? '}' : ']';
+  let depth = 0, inStr = false, escaped = false;
+  for (let i = start; i < cleaned.length; i++) {
+    const c = cleaned[i];
+    if (escaped) { escaped = false; continue; }
+    if (c === '\\' && inStr) { escaped = true; continue; }
+    if (c === '"') { inStr = !inStr; continue; }
+    if (inStr) continue;
+    if (c === cleaned[start]) depth++;
+    else if (c === endChar) { depth--; if (depth === 0) return cleaned.slice(start, i + 1); }
+  }
+  return cleaned.slice(start);
+}
+
 async function callAI(prompt, base64, mimeType, dataUrl) {
   const provider = state.aiProvider || 'gemini';
   const key = state.geminiKey.trim();
@@ -697,10 +717,7 @@ async function callAI(prompt, base64, mimeType, dataUrl) {
     const json = await res.json();
     const text = json.choices?.[0]?.message?.content || '';
     if (!text) throw new Error('OpenAI returned an empty response.');
-    const cleaned = text.replace(/```json/gi, '').replace(/```/g, '').trim();
-    const start = cleaned.indexOf('{');
-    const end = cleaned.lastIndexOf('}');
-    return start >= 0 && end >= start ? cleaned.slice(start, end + 1) : cleaned;
+    return extractJson(text);
   }
 
   if (provider === 'claude') {
@@ -725,10 +742,7 @@ async function callAI(prompt, base64, mimeType, dataUrl) {
     const json = await res.json();
     const text = json.content?.[0]?.text || '';
     if (!text) throw new Error('Claude returned an empty response.');
-    const cleaned = text.replace(/```json/gi, '').replace(/```/g, '').trim();
-    const start = cleaned.indexOf('{');
-    const end = cleaned.lastIndexOf('}');
-    return start >= 0 && end >= start ? cleaned.slice(start, end + 1) : cleaned;
+    return extractJson(text);
   }
 
   // Default: Gemini
@@ -749,10 +763,7 @@ async function callAI(prompt, base64, mimeType, dataUrl) {
   const json = await res.json();
   const text = json.candidates?.[0]?.content?.parts?.map(p => p.text || '').join('') || '';
   if (!text) throw new Error('Gemini returned an empty response.');
-  const cleaned = text.replace(/```json/gi, '').replace(/```/g, '').trim();
-  const start = cleaned.indexOf('{');
-  const end = cleaned.lastIndexOf('}');
-  return start >= 0 && end >= start ? cleaned.slice(start, end + 1) : cleaned;
+  return extractJson(text);
 }
 
 async function extractTeamFromScreenshot(kind, dataUrl) {
