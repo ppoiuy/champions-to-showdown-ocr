@@ -811,7 +811,11 @@ Use exact English names as shown.`;
 
   const result = await callAI(prompt, base64, mimeType, dataUrl);
   if (!state.aiResponses) state.aiResponses = {};
-  state.aiResponses[kind] = result;
+  try {
+    state.aiResponses[kind] = JSON.parse(result);
+  } catch {
+    state.aiResponses[kind] = result;
+  }
   if (state.debugOutput && els.debugPanel) {
     els.debugPanel.textContent = JSON.stringify(state.aiResponses, null, 2);
     els.debugPanel.style.display = 'block';
