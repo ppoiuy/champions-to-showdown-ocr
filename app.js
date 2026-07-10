@@ -664,7 +664,6 @@ function validateTeam(team, data, autoMega) {
         perMonWarnings.push({ slot: `Slot ${idx + 1}`, kind: 'bad', text: `"${mon.ability}" is not a legal ability for ${speciesEntry.name}.` });
       }
     }
-    }
 
     warnings.push(...perMonWarnings);
   });
