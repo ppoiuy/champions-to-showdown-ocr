@@ -636,17 +636,26 @@ function validateTeam(team, data, autoMega) {
       if (!data.naturesByName.has(n)) perMonWarnings.push({ slot: `Slot ${idx + 1}`, kind: 'bad', text: `unknown nature "${mon.nature}".` });
     }
 
-    if (state.learnsetCheck && speciesEntry && data.learnsets) {
-      const speciesId = speciesEntry.id;
-      const learnset = data.learnsets[speciesId];
-      if (learnset && learnset.learnset) {
-        for (const move of moveNames) {
-          if (!learnset.learnset[move]) {
-            perMonWarnings.push({ slot: `Slot ${idx + 1}`, kind: 'bad', text: `${speciesEntry.name} cannot learn "${move}".` });
+    if (state.learnsetCheck && speciesEntry) {
+      if (!data.learnsets) {
+        perMonWarnings.push({ slot: `Slot ${idx + 1}`, kind: 'bad', text: `Learnset data not yet loaded. Toggle "Moveset + ability check" off and on.` });
+      } else {
+        const speciesId = speciesEntry.id;
+        const learnset = data.learnsets[speciesId];
+        if (!learnset || !learnset.learnset) {
+          perMonWarnings.push({ slot: `Slot ${idx + 1}`, kind: 'bad', text: `No learnset found for ${speciesEntry.name} in loaded data.` });
+        } else {
+          for (let mi = 0; mi < (mon.moves || []).length; mi++) {
+            const originalMove = mon.moves[mi];
+            if (!originalMove) continue;
+            const normMove = normalizeLookup(originalMove);
+            if (!learnset.learnset[normMove]) {
+              perMonWarnings.push({ slot: `Slot ${idx + 1}`, kind: 'bad', text: `${speciesEntry.name} cannot learn "${originalMove}".` });
+            }
           }
         }
       }
-      const legalAbilities = speciesEntry.abilities;
+    }
       if (legalAbilities && mon.ability.trim()) {
         const abilityKeys = [legalAbilities['0'], legalAbilities['1'], legalAbilities['H'], legalAbilities['S']].filter(Boolean);
         const abilityOk = abilityKeys.some(a => normalizeLookup(a) === ability);
@@ -1062,8 +1071,13 @@ async function loadLearnsetData() {
     const exports = {};
     new Function('exports', `${text}; return exports;`)(exports);
     state.data.learnsets = exports.BattleLearnsets || {};
+    const sample = state.data.learnsets['pikachu'];
+    if (!sample || !sample.learnset) {
+      throw new Error('Learnset data loaded but has unexpected format.');
+    }
   } catch (e) {
-    setWarnings([{ kind: 'bad', text: `Moveset data failed to load: ${e.message}. Check your internet connection.` }]);
+    setWarnings([{ kind: 'bad', text: `Moveset data failed to load: ${e.message}. The learnset check will be unavailable.` }]);
+    state.data.learnsets = null;
     return;
   }
   if (state.learnsetCheck) {
