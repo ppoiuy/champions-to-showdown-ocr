@@ -57,7 +57,7 @@ If you run out of free Gemini tokens, use a different Google account for a fresh
 - Stat points are capped at 32 per stat and 66 total based on Pokemon Champions rules.
 - The moveset + ability check requires loading ~3MB of learnset data the first time it is enabled.
 
-The following forms cannot be automatically detected by Custom form match because they require visual sprite, type, or stat inspection. They must be set manually in the Team Editor:
+The following forms cannot be automatically detected by the "Custom form match" toggle because they require visual sprite, type, or stat inspection. They must be set manually in the Team Editor:
 
 Basculegion-F, Maushold-Four, Gourgeist-Large, Gourgeist-Small, Gourgeist-Super, Polteageist-Antique, Sinistcha-Masterpiece, Tauros-Paldea-Combat, Vivillon-Fancy, Vivillon-Pokeball
 
