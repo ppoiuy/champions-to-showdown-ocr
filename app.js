@@ -656,13 +656,14 @@ function validateTeam(team, data, autoMega) {
         }
       }
     }
-      if (legalAbilities && mon.ability.trim()) {
-        const abilityKeys = [legalAbilities['0'], legalAbilities['1'], legalAbilities['H'], legalAbilities['S']].filter(Boolean);
-        const abilityOk = abilityKeys.some(a => normalizeLookup(a) === ability);
-        if (!abilityOk) {
-          perMonWarnings.push({ slot: `Slot ${idx + 1}`, kind: 'bad', text: `"${mon.ability}" is not a legal ability for ${speciesEntry.name}.` });
-        }
+    const legalAbilities = speciesEntry && speciesEntry.abilities;
+    if (legalAbilities && mon.ability.trim()) {
+      const abilityKeys = [legalAbilities['0'], legalAbilities['1'], legalAbilities['H'], legalAbilities['S']].filter(Boolean);
+      const abilityOk = abilityKeys.some(a => normalizeLookup(a) === ability);
+      if (!abilityOk) {
+        perMonWarnings.push({ slot: `Slot ${idx + 1}`, kind: 'bad', text: `"${mon.ability}" is not a legal ability for ${speciesEntry.name}.` });
       }
+    }
     }
 
     warnings.push(...perMonWarnings);
