@@ -37,12 +37,12 @@ The app persists your key locally when **Save key** is enabled.
 
 If you run out of free Gemini tokens, use a different Google account for a fresh key.
 
-> **Nature detection**: Free Gemini (`gemini-2.5-flash`) has limited spatial reasoning and often misidentifies which stat has the red/blue arrow, producing incorrect natures. GPT and Claude are much more reliable for nature detection. OpenAI and Claude integrations are untested. Always double-check natures in the Team Editor.
+> **Nature detection**: Free Gemini (`gemini-2.5-flash`) has limited spatial reasoning and often misidentifies which stat has the red/blue arrow, producing incorrect natures. GPT and Claude are much more reliable for nature detection. OpenAI and Claude integrations are untested. Always double-check team details, especially natures, in the Team Editor.
 
 ## Toggles
 
 - **Moveset + ability check** (default: on) — filters move and ability dropdowns, and validates each Pokemon's learnset against Showdown data
-- **Auto-format Mega** (default: off) — rewrites species to Mega form and swaps ability when a Mega Stone item is detected
+- **Auto-format Mega** (default: off) — rewrites species to Mega form and swaps to the Mega Form's ability when a Mega Stone item is detected
 - **Fuzzy match** (default: on) — corrects close OCR misspellings against the Showdown dataset using Levenshtein distance
 - **AI form lookup** (default: off, unreliable) — asks the AI to identify the Pokemon sprite and return the correct form name
 - **Custom form match** (default: on) — applies rule-based form corrections for specific Pokemon
