@@ -805,6 +805,8 @@ Use exact English names as shown.`
     : `You are analyzing a Pokemon Champions "Moves & More" screen. It shows 6 Pokemon cards arranged in a grid (2 columns, 3 rows). Read left-to-right, top-to-bottom. Return a JSON object with a "team" array of exactly 6 objects. Each object MUST have the following fields. Do not skip any field.
 
 - species (string): official species name${formHint}
+- item (string): the held item name — shown on the card
+- ability (string): the ability name — shown on the card
 - moves (array of 4 strings): exactly 4 move names in order
 
 Use exact English names as shown.`;
