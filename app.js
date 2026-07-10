@@ -787,9 +787,9 @@ async function extractTeamFromScreenshot(kind, dataUrl) {
 - ability (string): the ability name
 - level (number): the numeric level
 - statPoints (object): { hp, atk, def, spa, spd, spe } — the small allocated stat point numbers (0-32 each, shown on the right side of each stat row). NOT the large base stat numbers.
-- nature (string|null): the Pokemon's NATURE name directly (e.g. "Brave", "Quiet", "Adamant"). Each stat row has the stat name on the left, then the stat value, and at the FAR RIGHT END of the row is where the arrow appears. One row has a RED UP ARROW at its far right end (indicating the boosted stat), another row has a BLUE DOWN ARROW at its far right end (indicating the lowered stat). You know Pokemon natures; name which nature matches the boost/lower pattern.
-- natureUp (string|null): ONLY if nature is uncertain — identify which stat name corresponds to the RED UP ARROW (the arrow is at the FAR RIGHT END of that stat's row, after the stat value number)
-- natureDown (string|null): ONLY if nature is uncertain — identify which stat name corresponds to the BLUE DOWN ARROW (the arrow is at the FAR RIGHT END of that stat's row, after the stat value number)
+- nature (string|null): the Pokemon's NATURE name directly (e.g. "Brave", "Quiet", "Adamant"). Each stat row reads: stat name, then DIRECTLY TO THE RIGHT OF THE NAME is the arrow (if present), then the stat value. One stat name has a RED UP ARROW positioned immediately to its right (that's the boosted stat), another stat name has a BLUE DOWN ARROW positioned immediately to its right (that's the lowered stat). You know Pokemon natures; name which nature matches the boost/lower pattern.
+- natureUp (string|null): ONLY if nature is uncertain — the stat name that has a RED UP ARROW immediately to its right
+- natureDown (string|null): ONLY if nature is uncertain — the stat name that has a BLUE DOWN ARROW immediately to its right
 
 Use exact English names as shown.`
     : `You are analyzing a Pokemon Champions "Moves & More" screen. It shows 6 Pokemon cards arranged in a grid (2 columns, 3 rows). Read left-to-right, top-to-bottom. Return a JSON object with a "team" array of exactly 6 objects. Each object MUST have the following fields. Do not skip any field.
