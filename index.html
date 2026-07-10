@@ -94,12 +94,19 @@
         <section class="panel">
           <div class="panel-head">
             <h2>Team Editor</h2>
+            <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
               <label class="toggle" title="Filter move and ability dropdowns and validate against each Pokemon's learnset. Uses Champions-specific learnset data from Showdown. (default: on)">
                 <input id="learnsetCheck" type="checkbox" checked />
                 <span>Moveset + ability check</span>
               </label>
+              <label class="toggle" title="Show the raw AI JSON response for debugging (default: off)">
+                <input id="debugOutput" type="checkbox" />
+                <span>Debug</span>
+              </label>
+            </div>
           </div>
           <div id="teamEditor" class="team-editor"></div>
+          <pre id="debugPanel" class="debug-panel" style="display:none"></pre>
       <div id="datalistContainer" style="display:none"></div>
         </section>
       </div>

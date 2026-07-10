@@ -340,3 +340,17 @@ h1 { margin: 0; font-size: clamp(28px, 5vw, 44px); line-height: 1.05; }
   }
   .export-box { min-height: 320px; }
 }
+
+.debug-panel {
+  background: #0e1320;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 12px;
+  max-height: 500px;
+  overflow: auto;
+  font-size: 12px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-all;
+}

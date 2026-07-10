@@ -142,12 +142,14 @@ const state = {
   formLookup: false,
   customFormMatch: true,
   learnsetCheck: true,
+  debugOutput: false,
   movesFile: null,
   statsFile: null,
   movesDataUrl: '',
   statsDataUrl: '',
   team: structuredClone(DEFAULT_TEAM),
   data: null,
+  aiResponses: null,
 };
 
 const els = {};
@@ -177,8 +179,8 @@ function init() {
 function bindElements() {
   [
     'geminiKey', 'saveKey', 'aiProvider', 'autoMega', 'fuzzyMatch', 'formLookup', 'customFormMatch',
-    'learnsetCheck', 'movesFile', 'statsFile', 'movesPreview', 'statsPreview',
-    'movesStatus', 'statsStatus', 'teamEditor', 'exportText', 'warningList', 'runOcr', 'clearAll', 'copyPaste', 'keyPanel', 'ocrStatus', 'keyBanner', 'datalistContainer'
+    'learnsetCheck', 'debugOutput', 'movesFile', 'statsFile', 'movesPreview', 'statsPreview',
+    'movesStatus', 'statsStatus', 'teamEditor', 'exportText', 'warningList', 'runOcr', 'clearAll', 'copyPaste', 'keyPanel', 'ocrStatus', 'keyBanner', 'datalistContainer', 'debugPanel'
   ].forEach(id => { els[id] = document.getElementById(id); });
 }
 
@@ -191,6 +193,7 @@ function wireEvents() {
   els.formLookup.checked = state.formLookup;
   els.customFormMatch.checked = state.customFormMatch;
   els.learnsetCheck.checked = state.learnsetCheck;
+  els.debugOutput.checked = state.debugOutput;
 
   els.saveKey.addEventListener('change', () => {
     state.saveKey = els.saveKey.checked;
@@ -233,6 +236,15 @@ function wireEvents() {
       renderTeamEditor();
     }
     validateAndRender();
+  });
+  els.debugOutput.addEventListener('change', () => {
+    state.debugOutput = els.debugOutput.checked;
+    if (state.debugOutput && state.aiResponses) {
+      els.debugPanel.textContent = JSON.stringify(state.aiResponses, null, 2);
+      els.debugPanel.style.display = 'block';
+    } else {
+      els.debugPanel.style.display = 'none';
+    }
   });
 
   document.querySelectorAll('[data-pick]').forEach(btn => {
@@ -802,6 +814,12 @@ Use exact English names as shown.`
 Use exact English names as shown.`;
 
   const result = await callAI(prompt, base64, mimeType, dataUrl);
+  if (!state.aiResponses) state.aiResponses = {};
+  state.aiResponses[kind] = result;
+  if (state.debugOutput && els.debugPanel) {
+    els.debugPanel.textContent = JSON.stringify(state.aiResponses, null, 2);
+    els.debugPanel.style.display = 'block';
+  }
   const parsed = JSON.parse(result);
   const team = parsed.team || [];
   if (!Array.isArray(team) || team.length === 0) throw new Error(`AI returned no team data for ${kind} screen.`);
