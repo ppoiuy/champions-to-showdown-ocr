@@ -714,6 +714,74 @@ function extractJson(text) {
   return cleaned.slice(start);
 }
 
+function parseStructuredJson(text) {
+  const cleaned = String(text || '').replace(/```json/gi, '').replace(/```/g, '').trim();
+  const candidates = [];
+  if (cleaned) candidates.push(cleaned);
+  const extracted = extractJson(cleaned);
+  if (extracted && extracted !== cleaned) candidates.push(extracted);
+
+  const seen = new Set();
+  const variants = [];
+  const addVariant = (v) => {
+    if (!v || seen.has(v)) return;
+    seen.add(v);
+    variants.push(v);
+  };
+  for (const candidate of candidates) {
+    addVariant(candidate);
+    addVariant(candidate.replace(/,\s*([}\]])/g, '$1'));
+    addVariant(repairMissingCommas(candidate).replace(/,\s*([}\]])/g, '$1'));
+    addVariant(candidate.replace(/[\u201c\u201d]/g, '"').replace(/\u2019/g, "'").replace(/\u00a0/g, ' '));
+    addVariant(repairMissingCommas(candidate.replace(/[\u201c\u201d]/g, '"').replace(/\u2019/g, "'").replace(/\u00a0/g, ' ')).replace(/,\s*,/g, ','));
+  }
+  for (const variant of variants) {
+    try {
+      const parsed = JSON.parse(variant);
+      if (parsed && typeof parsed === 'object') return parsed;
+    } catch {}
+  }
+  for (const candidate of candidates) {
+    const recovered = parseBestEffortJson(candidate);
+    if (recovered !== null) return recovered;
+  }
+  throw new Error('The AI returned malformed JSON. The response may have been cut off by the token limit or the AI misread the screenshot. Re-run the import, or turn on Debug to inspect the raw response.');
+}
+
+function repairMissingCommas(text) {
+  return String(text || '').replace(/([}\]\d"])\s*(?=[\[{"\u201c])/g, '$1, ');
+}
+
+function parseBestEffortJson(text) {
+  const s = String(text || '').trim();
+  if (s[0] !== '{' && s[0] !== '[') return null;
+  const close = s[0] === '{' ? '}' : ']';
+  let depth = 0, inStr = false, escaped = false;
+  const cutPositions = [];
+  for (let i = 0; i < s.length; i++) {
+    const c = s[i];
+    if (escaped) { escaped = false; continue; }
+    if (c === '\\' && inStr) { escaped = true; continue; }
+    if (c === '"') { inStr = !inStr; continue; }
+    if (inStr) continue;
+    if (c === s[0]) depth++;
+    else if (c === close) {
+      depth--;
+      if (depth === 0) { cutPositions.push(i + 1); break; }
+    } else if (c === ',' && depth === 1) {
+      cutPositions.push(i);
+    }
+  }
+  for (let i = cutPositions.length - 1; i >= 0; i--) {
+    const candidate = s.slice(0, cutPositions[i]).replace(/,\s*$/, '') + close;
+    try {
+      const parsed = JSON.parse(candidate);
+      if (parsed && typeof parsed === 'object') return parsed;
+    } catch {}
+  }
+  return null;
+}
+
 async function callAI(prompt, base64, mimeType, dataUrl) {
   const provider = state.aiProvider || 'gemini';
   const key = state.geminiKey.trim();
@@ -727,7 +795,7 @@ async function callAI(prompt, base64, mimeType, dataUrl) {
       ]}],
       response_format: { type: 'json_object' },
       temperature: 0.1,
-      max_tokens: 4096
+      max_tokens: 8192
     };
     const res = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -748,7 +816,7 @@ async function callAI(prompt, base64, mimeType, dataUrl) {
   if (provider === 'claude') {
     const body = {
       model: 'claude-sonnet-5',
-      max_tokens: 4096,
+      max_tokens: 8192,
       messages: [{ role: 'user', content: [
         { type: 'text', text: prompt + '\n\nYou MUST return valid JSON. No explanation, no markdown, only the JSON object.' },
         { type: 'image', source: { type: 'base64', media_type: mimeType, data: base64 } }
@@ -773,7 +841,7 @@ async function callAI(prompt, base64, mimeType, dataUrl) {
   // Default: Gemini
   const body = {
     contents: [{ role: 'user', parts: [{ inlineData: { mimeType, data: base64 } }, { text: prompt }] }],
-    generationConfig: { temperature: 0.1, maxOutputTokens: 4096, responseMimeType: 'application/json' }
+    generationConfig: { temperature: 0.1, maxOutputTokens: 8192, responseMimeType: 'application/json' }
   };
   const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${encodeURIComponent(key)}`, {
     method: 'POST',
@@ -817,16 +885,18 @@ Use exact English names as shown.`;
 
   const result = await callAI(prompt, base64, mimeType, dataUrl);
   if (!state.aiResponses) state.aiResponses = {};
+  let parsed;
   try {
-    state.aiResponses[kind] = JSON.parse(result);
-  } catch {
-    state.aiResponses[kind] = result;
+    parsed = parseStructuredJson(result);
+    state.aiResponses[kind] = parsed;
+  } catch (parseErr) {
+    state.aiResponses[kind] = String(result).slice(0, 800);
+    throw parseErr;
   }
   if (state.debugOutput && els.debugPanel) {
     els.debugPanel.textContent = JSON.stringify(state.aiResponses, null, 2);
     els.debugPanel.style.display = 'block';
   }
-  const parsed = JSON.parse(result);
   const team = parsed.team || [];
   if (!Array.isArray(team) || team.length === 0) throw new Error(`AI returned no team data for ${kind} screen.`);
   return kind === 'stats' ? normalizeStatsTeam(team) : normalizeMovesTeam(team);

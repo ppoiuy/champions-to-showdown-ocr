@@ -36,7 +36,7 @@ An API key from a supported AI provider is required. Google Gemini has a free ti
 
 The app persists your key locally when **Save key** is enabled.
 
-> **Cost & security warning**: OpenAI and Claude are paid and bill your account per request — each team import sends both screenshots to the provider and consumes tokens. Free Gemini is limited to roughly 750 imports per day. When **Save key** is on, the key is stored in plaintext in your browser's local storage; anyone with access to the device can read it, so avoid saving it on shared or public devices.
+> **Cost & security warning**: OpenAI and Claude are paid and bill your account per request — each team import sends both screenshots to the provider and consumes tokens. Free Gemini is limited to roughly 750 imports per day. When **Save key** is on, the key is stored in plaintext in your browser's local storage. It can be read by anyone with access to the device and by any JavaScript running on this page — third-party scripts, anything injected via an XSS vulnerability, or a browser extension — so avoid saving it on shared or public devices.
 
 If you run out of free Gemini tokens, use a different Google account for a fresh key.
 
@@ -69,7 +69,7 @@ Basculegion-F, Maushold-Four, Gourgeist-Large, Gourgeist-Small, Gourgeist-Super,
 - Screenshots are sent to the selected AI provider for OCR processing.
 - No data is stored on any server.
 
-> **Saved paid keys are risky**: If you enable **Save key** with a paid provider (OpenAI or Claude), the key is stored in plaintext in your browser's local storage. Anyone with access to the device — and any script running on shared machines — can read it and spend **your money** on their own API calls. Avoid saving paid keys and clear them after use; only Gemini free keys are low-value enough to leave saved.
+> **Saved paid keys are risky**: If you enable **Save key** with a paid provider (OpenAI or Claude), the key is stored in plaintext in your browser's local storage. Anyone with access to the device — and any script running on this page, such as third-party scripts, XSS, or browser extensions — can read it and spend **your money** on their own API calls. Avoid saving paid keys and clear them after use; only Gemini free keys are low-value enough to leave saved.
 
 ## Validation
 
