@@ -40,7 +40,7 @@ The app persists your key locally when **Save key** is enabled.
 
 If you run out of free Gemini tokens, use a different Google account for a fresh key.
 
-> **Nature detection**: Free Gemini (`gemini-3.5-flash`) has limited spatial reasoning and often misidentifies which stat has the red/blue arrow, producing incorrect natures. GPT and Claude may be much more reliable, however both are untested. Always double-check team details, especially natures, in the Team Editor.
+> **Free Gemini availability**: The free Gemini tier is often overloaded and can fail or respond slowly during peak hours due to high traffic. If **Import screenshots** fails, wait a few minutes and retry, or consider a paid provider for a more stable experience.
 
 ## Toggles
 
@@ -53,7 +53,6 @@ If you run out of free Gemini tokens, use a different Google account for a fresh
 ## Warnings
 
 - OCR can make mistakes. Always review the extracted data before using it.
-- Nature detection is unreliable on free Gemini. GPT and Claude may produce better results (untested).
 - AI form lookup is unreliable — the AI often misidentifies sprites or returns the wrong form suffix.
 - The tool uses Pokemon Showdown data for validation. Pokemon Champions may have a different legal move/item pool.
 - Stat points are capped at 32 per stat and 66 total based on Pokemon Champions rules.
