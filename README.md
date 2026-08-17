@@ -26,7 +26,7 @@ An API key from a supported AI provider is required. Google Gemini has a free ti
 
 | Provider | Model | Cost |
 |---|---|---|
-| Google Gemini | `gemini-2.5-flash` | Free tier available |
+| Google Gemini | `gemini-3.5-flash` | Free tier available |
 | OpenAI | `gpt-5.6-luna` | Paid (untested) |
 | Claude | `claude-sonnet-5` | Paid (untested) |
 
@@ -40,7 +40,7 @@ The app persists your key locally when **Save key** is enabled.
 
 If you run out of free Gemini tokens, use a different Google account for a fresh key.
 
-> **Nature detection**: Free Gemini (`gemini-2.5-flash`) has limited spatial reasoning and often misidentifies which stat has the red/blue arrow, producing incorrect natures. GPT and Claude may be much more reliable, however both are untested. Always double-check team details, especially natures, in the Team Editor.
+> **Nature detection**: Free Gemini (`gemini-3.5-flash`) has limited spatial reasoning and often misidentifies which stat has the red/blue arrow, producing incorrect natures. GPT and Claude may be much more reliable, however both are untested. Always double-check team details, especially natures, in the Team Editor.
 
 ## Toggles
 
@@ -68,6 +68,8 @@ Basculegion-F, Maushold-Four, Gourgeist-Large, Gourgeist-Small, Gourgeist-Super,
 - Your API key is stored in your browser's local storage when saved.
 - Screenshots are sent to the selected AI provider for OCR processing.
 - No data is stored on any server.
+
+> **Saved paid keys are risky**: If you enable **Save key** with a paid provider (OpenAI or Claude), the key is stored in plaintext in your browser's local storage. Anyone with access to the device — and any script running on shared machines — can read it and spend **your money** on their own API calls. Avoid saving paid keys and clear them after use; only Gemini free keys are low-value enough to leave saved.
 
 ## Validation
 
