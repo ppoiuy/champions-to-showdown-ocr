@@ -88,6 +88,17 @@ h1 { margin: 0; font-size: clamp(28px, 5vw, 44px); line-height: 1.05; }
   margin: 8px 0 0;
 }
 
+.warning-cost {
+  color: var(--warn);
+  font-size: 12px;
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 204, 102, .3);
+  border-radius: 10px;
+  background: rgba(255, 204, 102, .07);
+  line-height: 1.5;
+}
+
 .key-banner {
   background: linear-gradient(135deg, rgba(255, 204, 102, .15), rgba(255, 204, 102, .08));
   border: 1px solid rgba(255, 204, 102, .3);

@@ -355,6 +355,10 @@ async function runOcr() {
     setWarnings([{ kind: 'bad', text: `A valid API key is required. Open the "AI Provider" section at the bottom of the page and enter your key.` }]);
     return;
   }
+  if (state.aiProvider === 'openai' || state.aiProvider === 'claude') {
+    const ok = confirm('This provider is paid. Each import sends both screenshots to the AI and bills your API account — check your provider dashboard for pricing and usage limits. Continue?');
+    if (!ok) return;
+  }
   if (state.saveKey) setSavedKey(state.geminiKey.trim());
   els.runOcr.disabled = true;
   els.runOcr.textContent = 'Importing...';

@@ -36,6 +36,8 @@ An API key from a supported AI provider is required. Google Gemini has a free ti
 
 The app persists your key locally when **Save key** is enabled.
 
+> **Cost & security warning**: OpenAI and Claude are paid and bill your account per request — each team import sends both screenshots to the provider and consumes tokens. Free Gemini is limited to roughly 750 imports per day. When **Save key** is on, the key is stored in plaintext in your browser's local storage; anyone with access to the device can read it, so avoid saving it on shared or public devices.
+
 If you run out of free Gemini tokens, use a different Google account for a fresh key.
 
 > **Nature detection**: Free Gemini (`gemini-2.5-flash`) has limited spatial reasoning and often misidentifies which stat has the red/blue arrow, producing incorrect natures. GPT and Claude may be much more reliable, however both are untested. Always double-check team details, especially natures, in the Team Editor.
