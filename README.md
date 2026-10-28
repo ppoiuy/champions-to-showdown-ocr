@@ -4,7 +4,7 @@ Convert Pokemon Champions team detail screenshots into Showdown format text.
 
 Live site: https://ppoiuy.github.io/champions-to-showdown-ocr/
 
-Updated for Regulation M-B. New regulations may bring new Pokemon, moves, abilities, and forms.
+Updated for Regulation M-C. New regulations may bring new Pokemon, moves, abilities, and forms.
 
 ## Usage
 
@@ -26,9 +26,9 @@ An API key from a supported AI provider is required. Google Gemini has a free ti
 
 | Provider | Model | Cost |
 |---|---|---|
-| Google Gemini | `gemini-3.5-flash` | Free tier available |
-| OpenAI | `gpt-5.6-luna` | Paid (untested) |
-| Claude | `claude-sonnet-5` | Paid (untested) |
+| Google Gemini | `gemini-3.8-flash` | Free tier available |
+| OpenAI | `gpt-6-luna` | Paid (untested) |
+| Claude | `claude-sonnet-5.5` | Paid (untested) |
 
 - [Google Gemini](https://aistudio.google.com/app/api-keys) — free tier available
 - [OpenAI](https://platform.openai.com/api-keys) — paid
