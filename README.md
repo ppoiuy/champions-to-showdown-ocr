@@ -60,7 +60,7 @@ If you run out of free Gemini tokens, use a different Google account for a fresh
 
 The following forms cannot be automatically detected by the "Custom form match" toggle because they require visual sprite, type, or stat inspection. They must be set manually in the Team Editor:
 
-Basculegion-F, Maushold-Four, Gourgeist-Large, Gourgeist-Small, Gourgeist-Super, Polteageist-Antique, Sinistcha-Masterpiece, Tauros-Paldea-Combat, Vivillon-Fancy, Vivillon-Pokeball
+Basculegion-F, Maushold-Four, Gourgeist-Large, Gourgeist-Small, Gourgeist-Super, Polteageist-Antique, Sinistcha-Masterpiece, Tauros-Paldea-Combat, Vivillon-Fancy, Vivillon-Pokeball, Squawkabilly-Blue, Squawkabilly-Yellow, Squawkabilly-White
 
 ## Privacy
 
